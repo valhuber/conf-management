@@ -1,0 +1,10 @@
+{
+  "name": "ConfManagementStartup",
+  "isActive": true,
+  "loggingLevel": "Warning",
+  "isSingleServer": true,
+  "description": "When the API in started, this code runs to load outboard strings such as urls, http headers etc.\nWe load from a property file (<teamSpaceName>.Properties) into ConfManagementLib's Config (a data structure in our library).\n   You might use teamspaces for dev vs. production, with different property files for each.\nAPI.Properties goes into your LAC folder (where the Derby DBs are - Finance, Marketing, MktConfOffers etc):\n\n#<teamSpaceName> Properties\nauthHeader={ \"headers\": {\"Authorization\" : \"CALiveAPICreator AcctgToken:1\"} }\nresourceURL=http://localhost:8080/rest/default/conf-management/v1\nloadResourcesFromTable=true\nresourcesToAudit={\"ProcessCharges\": true, \"DummyResourceName\": true}",
+  "connectionName": null,
+  "providerName": "Startup",
+  "parameters": null
+}

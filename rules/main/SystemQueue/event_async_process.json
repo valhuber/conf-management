@@ -1,0 +1,19 @@
+{
+  "name": "event_async_process",
+  "entity": "SystemQueue",
+  "isActive": true,
+  "ruleType": "event",
+  "asynchronous": true,
+  "appliesTo": {
+    "insert": true,
+    "update": true,
+    "delete": false
+  },
+  "codeType": "JavaScript",
+  "isAutoTitle": false,
+  "title": "Retry From MsgContent Change - Async (response time) Post MsgContent",
+  "comments": "Initial message (or API ProcessPayload - see Functions) simply creates a SystemQueue row, with MsgContent (JSON or XML), and PostToResource. \n\nThis *asynchronous* event posts the MsgContent to row.PostToResource (here, ProcessChargesResource), which provides mapping and transformation services, and processing of the data into the database (Charges, Talks).\n\nAsync events fire after the current transaction, so you can provide quick response while performing lengthy processing in background thread.\nFor async events, avoid SysUtility.getResource, oldRow and logicContext references.",
+  "topics": [
+    "Process Message"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "event_sync_process",
+  "entity": "SystemQueue",
+  "isActive": true,
+  "ruleType": "event",
+  "asynchronous": false,
+  "appliesTo": {
+    "insert": false,
+    "update": true,
+    "delete": false
+  },
+  "codeType": "JavaScript",
+  "isAutoTitle": false,
+  "title": "Retry From RetryPayload Function - Post MsgContent to PostToResource",
+  "comments": null,
+  "topics": [
+    "Process Message"
+  ]
+}

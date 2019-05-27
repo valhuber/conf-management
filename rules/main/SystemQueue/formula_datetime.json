@@ -1,0 +1,14 @@
+{
+  "name": "formula_datetime",
+  "entity": "SystemQueue",
+  "isActive": true,
+  "ruleType": "formula",
+  "attribute": "Alerts_datetime",
+  "codeType": "JavaScript",
+  "isJIT": false,
+  "isAutoTitle": false,
+  "title": "TimeStamp (insert)",
+  "comments": null,
+  "topics": [
+  ]
+}

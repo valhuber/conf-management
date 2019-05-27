@@ -1,0 +1,6 @@
+{
+  "name": "SysScalableQueueReqEvent",
+  "eventType": "request",
+  "comments": null,
+  "isActive": true
+}

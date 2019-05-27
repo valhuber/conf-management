@@ -1,0 +1,24 @@
+<h2>1. <tt>ProcessChargesListener</tt> - creates <tt>SystemQueue</tt> row</h2>
+
+<p>See the listener <tt>ProcessChargesListener</tt> (topic&nbsp;ProcessChargesTopic).</p>
+
+<p>It POSTs&nbsp;a <tt>SystemQueue</tt> row, setting attributes M<tt>sgContent</tt>&nbsp;(the JSON/XML Payload) and <tt>PostToResource</tt>.</p>
+
+<h3>&nbsp; &nbsp; &nbsp; 1.1 <tt>ProcessCharges</tt> Function</h3>
+
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Instead or in addition, you can create a function that does the same thing.</p>
+
+<p>&nbsp;</p>
+
+<h2>2. <tt>ProcessChargesResource</tt> - mapping and transformation, logic and persistence</h2>
+
+<p>This resource does the processing to map and transform the incoming request data to match our schema, and persists the data into the <tt>Charges</tt> and <tt>Talks</tt> tables, including running any of their logic (none in this simplified example).</p>
+
+<p>&nbsp;</p>
+
+<h2>3. <tt>SystemQueue</tt>&nbsp;Event:&nbsp;<tt>Process Payload to underlying tables - Async</tt></h2>
+
+<p>This <em>asynchronous</em>&nbsp;event posts &nbsp;<tt>row.MsgContent</tt>&nbsp;data to <tt>row.PostToResource</tt> (here, <tt>ProcessChargesResource</tt>), which provides mapping and transformation services, and processing&nbsp;of the data into the database&nbsp;as described above.</p>
+
+<p>Async events fire after the current transaction, so you can provide quick response while performing lengthy processing in background thread.<br />
+For async events, avoid SysUtility.getResource, oldRow and logicContext references.</p>

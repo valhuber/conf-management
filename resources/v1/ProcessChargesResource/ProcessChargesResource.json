@@ -1,0 +1,45 @@
+{
+  "name": "ProcessChargesResource",
+  "description": "Payload sample, created by Post, ProcessChargesListener, or SysTimerAsync:\n\n[\n  {\n    \"name\": \"App Economy World\",\n    \"unusedAttribute\": \"deleteMe\",\n    \"ExhibitsCost\": null,\n    \"TalksCost\": null,\n    \"MarketingProgramName\": \"Agile\",\n    \"Talks_List\": [\n    ]\n  }\n]",
+  "siblingRank": 100,
+  "resourceType": "TableBased",
+  "prefix": "main",
+  "entity": "Charges",
+  "isCollection": true,
+  "isCombined": false,
+  "filter": null,
+  "order": null,
+  "useSchemaAttributes": false,
+  "attributes": [
+    {
+      "name": "name",
+      "attribute": "name",
+      "description": null,
+      "isKey": false
+    },
+    {
+      "name": "TalksCost",
+      "attribute": "Cost_Talks",
+      "description": null,
+      "isKey": false
+    },
+    {
+      "name": "ExhibitsCost",
+      "attribute": "Cost_Exhibits",
+      "description": null,
+      "isKey": false
+    },
+    {
+      "name": "ident",
+      "attribute": "SourceIdent",
+      "description": null,
+      "isKey": false
+    },
+    {
+      "name": "MarketingProgramName",
+      "attribute": "MarketingProgramName",
+      "description": null,
+      "isKey": false
+    }
+  ]
+}

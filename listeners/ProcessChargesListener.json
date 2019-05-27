@@ -1,0 +1,15 @@
+{
+  "name": "ProcessChargesListener",
+  "isActive": true,
+  "loggingLevel": "Fine",
+  "isSingleServer": true,
+  "description": "This listener is designed to ensure that message persisted (not lost), even if errors occur in message processing.\nSee the rules, and the Topic information.",
+  "connectionName": "ManagementConnection",
+  "providerName": "MQTT",
+  "parameters": {
+    "topic_name": {
+      "value": "ProcessChargesTopic",
+      "comments": null
+    }
+  }
+}

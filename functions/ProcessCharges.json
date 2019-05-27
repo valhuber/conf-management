@@ -1,0 +1,9 @@
+{
+  "name": "ProcessCharges",
+  "isActive": true,
+  "comments": "Updates SystemQueue row to POST to ProcessChargesResource.  Sample Data:\n[\n  {\n    \"name\": \"App Economy World\",\n    \"unusedAttribute\": \"deleteMe\",\n    \"ExhibitsCost\": null,\n    \"TalksCost\": null,\n    \"MarketingProgramName\": \"Agile\",\n    \"Talks_List\": [\n    ]\n  }\n]",
+  "returnType": "{\n  \"StatusCode\": 201\n}",
+  "extendedProperties": null,
+  "parameters": null,
+  "functionType": "apiLevel"
+}
