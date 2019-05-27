@@ -1,0 +1,1142 @@
+{
+  "{f}api.json": {
+    "name": "Conference  Offers",
+    "urlFragment": "conf-offer",
+    "comments": "Illustrates rich, custom integration, via APIs and messages.\nSee Learning Center > Example; Accept Conference Offers, Mark Options Used, Approve and Alert Conference Management.\nNote: uses a public broker, which may not be allowed in some corporate networks.",
+    "isEnabled": true,
+    "authProviderName": "Built-in authentication"
+  },
+  "{f}ReadMe.md": "# API\nThis folder contains the content of your API definition.\nName: Conference  Offers\nURL Fragment: conf-offer\nComments: Illustrates rich, custom integration, via APIs and messages.\nSee Learning Center > Example; Accept Conference Offers, Mark Options Used, Approve and Alert Conference Management.\nNote: uses a public broker, which may not be allowed in some corporate networks.\n",
+  "{f}exportoptions.json": {
+    "passwordStyle": "PLAINTEXT",
+    "apiOptionStyle": "SKIP_DEFAULT",
+    "authTokenStyle": "SKIP_AUTO",
+    "skipUrlFragmentWrapping": true,
+    "libraryStyle": "EMIT_ALL",
+    "schemaCacheStyle": "DO_NOT_EMIT"
+  },
+  "{f}apioptions.json": {
+    "Permit Authorization parameter in URL": {
+      "dataType": "boolean",
+      "value": true,
+      "defaultValue": false
+    },
+    "Tech docs URL": {
+      "dataType": "string",
+      "value": "https://docops.ca.com/ca-live-api-creator/5-1/en/tutorial/northwind",
+      "defaultValue": null
+    }
+  },
+  "{d}connections": {
+    "{f}ReadMe.md": "# CONNECTIONS\nThis folder contains definitions for connections.\n",
+    "{f}PublishManagementConnection.json": {
+      "name": "PublishManagementConnection",
+      "isActive": true,
+      "description": "MQTT connection used to publish messages of topic “ManagementCost” to notify Conference Management API that event is approved.",
+      "providerName": "MQTT",
+      "parameters": {
+        "automaticReconnect": {
+          "name": "automaticReconnect",
+          "value": "true",
+          "comments": null,
+          "kind": null
+        },
+        "broker": {
+          "name": "broker",
+          "value": "tcp://iot.eclipse.org:1883",
+          "comments": "local might be tcp://localhost:1883\n\nremote might be tcp://iot.eclipse.org:1883",
+          "kind": null
+        },
+        "clientId": {
+          "name": "clientId",
+          "value": "RANDOM",
+          "comments": null,
+          "kind": null
+        },
+        "keepAliveInterval": {
+          "name": "keepAliveInterval",
+          "value": "20",
+          "comments": null,
+          "kind": null
+        }
+      }
+    }
+  },
+  "{d}listeners": {
+    "{f}ReadMe.md": "# LISTENERS\nThis folder contains definitions for listeners.\n",
+    "{f}LoadTestData.json": {
+      "name": "LoadTestData",
+      "isActive": true,
+      "loggingLevel": "Warning",
+      "isSingleServer": true,
+      "description": null,
+      "connectionName": null,
+      "providerName": "Startup",
+      "parameters": null
+    },
+    "{f}LoadTestData.js": "var title = \"ConfOffer Startup Listener, LoadTestData - \";\n\n\n/*\n    Important\n    =========\n    If the server starts too fast, you may find it necessary to\n    insert a start delay before you issue calls to your API, as here..\n    \n*/\n// print(\"\\nSleeping 20 seconds...\");\nvar Thread = Java.type('java.lang.Thread');\nThread.sleep(20000);\n// print(\"woken up\");\n\n// db(\"SysUtility.getTeamSpaceInfo(): \" + JSON.stringify(listenerUtil.getTeamSpaceInfo()));\nvar teamSpaceUrlFragment = listenerUtil.getTeamSpaceInfo().urlFragment;   //.getProjectInfo().urlFragment;\nvar apiURLFragment = listenerUtil.getApiInfo().urlFragment;    \nvar url = \"http://\" + listenerUtil.getHostName() + ':8080/rest/' + teamSpaceUrlFragment + '/' + apiURLFragment + '/v1/PartnerPost';\nvar noFilter = {};\nvar optionsAuth = { 'headers': {'Authorization' : 'CALiveAPICreator AdminKey:1'}};\n\nvar response = \"\";\n// print(title + 'running, check for data at: ' + url);  // http://localhost:8080/rest/default/conf-offer/v1/PartnerPost\nresponse = listenerUtil.restGet(url, noFilter, optionsAuth);\n// db(title + 'running, restGet response: ' + response);\n\nif (\"[]\" !== response) {\n    log.debug(title + 'test data data already loaded... no action for server at: ' + url);  // http://localhost:8080/rest/default/conf-offer/v1/PartnerPost\n}  else {\n    var data = testData();\n    print(\"\\n\" + title + 'test data empty - posting testData() with server at: ' + url);  // http://localhost:8080/rest/default/conf-offer/v1/PartnerPost\n    var postResponse = listenerUtil.restPost(url, null, optionsAuth, data);\n    // db('empty - postResponse: ' + postResponse);\n}\nprint('');\n\nfunction db(aString) {\n    var printString = title + aString;\n    print(printString);\n    log.debug(printString);\n}\n\nfunction testData() {\n    return [\n      {\n        \"name\": \"App Economy World\",\n        \"Talks_List\": [\n          {\n            \"name\": \"Small Stage\",\n            \"Price\": 1000\n          },\n          {\n            \"name\": \"Big Stage\",\n            \"Price\": 4000\n          },\n          {\n            \"name\": \"Phone Booth\",\n            \"Price\": 100\n          }\n        ],\n        \"Exhibits_List\": [\n          {\n            \"Price\": 1000,\n            \"name\": \"Small Table\"\n          },\n          {\n            \"Price\": 10000,\n            \"name\": \"Multi-Booth Area\"\n          },\n          {\n            \"Price\": 5000,\n            \"name\": \"Booth\"\n          },\n          {\n            \"Price\": 100,\n            \"name\": \"Card Table in Parking Lot\"\n          }\n        ]\n      },\n      {\n        \"name\": \"Agility Achieved\"\n      },\n      {\n        \"name\": \"Making Friends in Politics\"\n      }\n    ];\n}\n"
+  },
+  "{d}custom_endpoints": {
+    "{f}ReadMe.md": "# CUSTOM_ENDPOINTS\nThis folder contains definitions for custom_endpoints.\n",
+    "{f}version.json": {
+      "name": "version",
+      "isActive": true,
+      "description": "You may find it helpful to provide a version for each API, to be certain which version is actually running.",
+      "requiresAuthentication": false,
+      "urlPattern": "_version",
+      "appliesTo": {
+        "get": true,
+        "put": false,
+        "post": false,
+        "delete": false
+      }
+    },
+    "{f}version.js": "var res = {version: '5.0.0'};\nreturn JSON.stringify(res);\n"
+  },
+  "{f}relationships.json": [
+    {
+      "parentEntity": "ConfManagement:MarketingPrograms",
+      "childEntity": "main:ConferenceOffers",
+      "roleToParent": "MarketingProgram",
+      "roleToChild": "ConferenceOffers_List",
+      "deleteRule": "No Action",
+      "updateRule": "No Action",
+      "parentColumns": [
+        "name"
+      ],
+      "childColumns": [
+        "MarketingProgramName"
+      ]
+    },
+    {
+      "parentEntity": "main:ConferenceOffers",
+      "childEntity": "main:Exhibits",
+      "roleToParent": "ConferenceOffers",
+      "roleToChild": "Exhibits_List",
+      "deleteRule": "Cascade",
+      "updateRule": "No Action",
+      "parentColumns": [
+        "ident"
+      ],
+      "childColumns": [
+        "Conferences_ident"
+      ]
+    },
+    {
+      "parentEntity": "main:ConferenceOffers",
+      "childEntity": "main:Talks",
+      "roleToParent": "ConferenceOffers",
+      "roleToChild": "Talks_List",
+      "deleteRule": "Cascade",
+      "updateRule": "No Action",
+      "parentColumns": [
+        "ident"
+      ],
+      "childColumns": [
+        "Conferences_ident"
+      ]
+    }
+  ],
+  "{d}data_sources": {
+    "{f}ReadMe.md": "# DATA SOURCES\nThis folder contains definitions for data sources.\n",
+    "{f}ConfManagement.json": {
+      "name": "ConfManagement",
+      "prefix": "ConfManagement",
+      "title": "Conference Management",
+      "databaseType": "DERBY",
+      "comments": null,
+      "isActive": true,
+      "isLogErrors": false,
+      "isSchemaEditable": false,
+      "isSupportBoolean": false,
+      "isReadOnly": false,
+      "useJNDIDataSource": false,
+      "url": "jdbc:derby:ConfManagement",
+      "catalog": null,
+      "schema": "\"ConfManagement\"",
+      "username": "\"ConfManagement\"",
+      "password": null,
+      "maximumConnections": 20,
+      "tableExcludes": null,
+      "tableIncludes": null,
+      "procedureExcludes": null,
+      "procedureIncludes": null,
+      "nonPersistentAttributes": {
+      },
+      "tableInfos": {
+      },
+      "viewInfos": {
+      },
+      "procedureInfos": {
+      }
+    },
+    "{f}ConfOffer.json": {
+      "name": "ConfOffer",
+      "prefix": "main",
+      "title": null,
+      "databaseType": "DERBY",
+      "comments": null,
+      "isActive": true,
+      "isLogErrors": false,
+      "isSchemaEditable": true,
+      "isSupportBoolean": false,
+      "isReadOnly": false,
+      "useJNDIDataSource": false,
+      "url": "jdbc:derby:ConfOffer",
+      "catalog": null,
+      "schema": "\"ConfOffer\"",
+      "username": "\"ConfOffer\"",
+      "password": null,
+      "maximumConnections": 20,
+      "tableExcludes": null,
+      "tableIncludes": null,
+      "procedureExcludes": null,
+      "procedureIncludes": null,
+      "nonPersistentAttributes": {
+      },
+      "tableInfos": {
+      },
+      "viewInfos": {
+      },
+      "procedureInfos": {
+      }
+    }
+  },
+  "{d}filters": {
+    "{f}ReadMe.md": "# FILTERS\nThis folder contains definitions for filters.\n"
+  },
+  "{d}functions": {
+    "{f}ReadMe.md": "# FUNCTIONS\nThis folder contains definitions for functions.\n",
+    "{f}ApprovalTest.json": {
+      "name": "ApprovalTest",
+      "isActive": true,
+      "comments": "Alternative to UI, use Get on this to test Conf Offer and Conf Management.  Expect the response shown below.",
+      "returnType": "{\"statusCode\":201,\"message\":\"ok - ConfManagement Charges row added\"}",
+      "extendedProperties": null,
+      "parameters": null,
+      "functionType": "apiLevel"
+    },
+    "{f}ApprovalTest.js": "var testName = \"Function testAcctgAlert: \";\n\n// get App Economy World row, JSON Object\nfunction getConfOffer(aMsg) {\n    var url = req.localFullBaseURL;\n    var eventGetURL = url + \"Conferences_Test\";\n    var key = \"App Economy World\" ;\n    var getParams = {sysfilter: \"equal(\\\"name\\\":\" + JSON.stringify( key ) + \")\"};\n    var eventString = SysUtility.restGet(eventGetURL, getParams, ConfigLib.confOfferAuth);  // see API Properties > Libraries\n    db(\"getConfOffer[\" + aMsg + \"]: \" + eventGetURL + \", getParams: \" + JSON.stringify(getParams) +\n        \"\\nget returns: \" + eventString.substring(1,150) + \"...\");\n    return JSON.parse(eventString)[0];\n}\n\n// put Conference Offer (JSON Object), returns putResponse\nfunction putConfOffer(anEvent, anApprovedFlag, aTtitle) {\n    anEvent.Approved = anApprovedFlag;\n    var url = req.localFullBaseURL + 'Conferences_Test';\n    var putParams = null;\n    db(\"putConfOffer - \" + aTtitle + \", updating url: \" + url + \", with request data...\\n\" +\n        JSON.stringify(anEvent).substring(1,96) +\n        \"\\nusing Auth: \" + JSON.stringify(ConfigLib.confOfferAuth));\n    var putResponseString = SysUtility.restPut(url, putParams, ConfigLib.confOfferAuth, anEvent);\n\n    var putResponse = JSON.parse(putResponseString);\n    db(\".. putConfOffer, put completed with statusCode: \" + putResponse.statusCode + \", putResponse: \" +\n        JSON.stringify(putResponse).substring(1,96));\n    if (putResponse.statusCode !== 200) {\n        log.debug(testName + \"ERROR: Post txSummary did not find expected 200...\");\n        log.debug(putResponse); //an object which will include a transaction summary and a summary of the rules fired during this request\n        throw new Error(testName + \"ERROR: Post txSummary did not find expected 201...\");\n    }\n    return putResponse;\n}\n\n// delay (e.g., allow aync message to complete processing)\nfunction pausecomp(millis)\n{\n    var date = new Date();\n    var curDate = null;\n    do { curDate = new Date(); }\n    while(curDate-date < millis);\n}\n\n// debug prints to log and console\nfunction db(aString) {\n    var printString = testName + aString;\n    log.debug(printString);\n    print(\"\");\n    print(printString);\n    return printString;\n}\n\n// get ConfManagement Charges data, returns JSON String\nfunction getConfManagementCharges() {\n    var url = req.localFullBaseURL;\n    url = url.replace(ConfigLib.confOfferURLFragment, ConfigLib.confManagementURLFragment);\n    var chargesGetURL = url + \"Charges\";\n    db(\"getConfManagementCharges, acctgGetURL: \" + chargesGetURL + \", with auth: \" + JSON.stringify(ConfigLib.confManagementAuth) + \", getting\");\n    var chargesString = SysUtility.restGet(chargesGetURL, null, ConfigLib.confManagementAuth);\n    db(\"getConfManagementCharges, acctgGetURL: \" + chargesGetURL + \", with auth: \" + JSON.stringify(ConfigLib.confManagementAuth) + \n        \", get returns:\\n\" + chargesString.substring(1,32));\n    return chargesString;\n}\n\n\n//   ******************* MAIN CODE STARTS HERE\n\nvar confOffer = getConfOffer(\"Starting\");\ndb('Checking if already approved: ' + \"[\" + confOffer.Approved + \"] in: \" + JSON.stringify(confOffer).substring(1,32));\nvar reset = false;\n\nif (confOffer.Approved === true) {\n    reset = true;\n    putConfOffer(confOffer, false, \"Resetting Approved\");\n    confOffer = getConfOffer(\"for optLock\");\n}\n\n\nvar chargesOld = getConfManagementCharges();  // this should add a charges record, visible in diff below\n\nprint(\"\\n\\n******************************\");\nvar approveResponse = putConfOffer(confOffer, true, \"Approving\");\nprint(\"\\n******************************\\n\\n\");\n\npausecomp(2000);  // put sends message, wait for it to complete...\nvar chargesNew = getConfManagementCharges();  // ALERT - diff fails if pagination occurs\nvar diff = SysUtility.jsonDiff(chargesOld, chargesNew, 0 ,false);\nvar diffResult = diff.contains(\"Different size arrays -\") ;\n\nif (diffResult === true){\n    print(\"\");\n    db(\"Success... diff -->\");\n    db (diff);\n    return {statusCode: 201, message: \"ok - ConfManagement Charges row added\"};\n} else{\n    print(\"\");\n    db(\"Diff fails-->\");\n    db(\"chargesOld: \" + chargesOld);\n    db(\"chargesNew: \" + chargesNew);\n    db(\"diff -->\");\n    db (diff);\n    return {statusCode: undefined, message: \"Diff failed: \", \"diff\": diff};\n}\n",
+    "{f}Approve.json": {
+      "name": "Approve",
+      "isActive": true,
+      "comments": "If you've made all your elections, click Submit to finish and alert Management.",
+      "returnType": null,
+      "extendedProperties": null,
+      "parameters": null,
+      "functionType": "rowLevel",
+      "appliesTo": [
+        "main:ConferenceOffers"
+      ]
+    },
+    "{f}Approve.js": "row.Approved = true;\nreturn {status: 201,\n        message: \"Success!\"};\n",
+    "{f}mergeStoriesToTopics.json": {
+      "name": "mergeStoriesToTopics",
+      "isActive": true,
+      "comments": "Pulls Agile User Stories to create Topics",
+      "returnType": "{\n  \"status\": 201\n}",
+      "extendedProperties": null,
+      "parameters": null,
+      "functionType": "apiLevel"
+    },
+    "{f}mergeStoriesToTopics.js": "return agile.mergeStoriesToTopics(req);   // requires library, supplied on request.\n"
+  },
+  "{d}libraries": {
+    "{f}ReadMe.md": "# LIBRARIES\nThis folder contains definitions for libraries and whether they are used.\n",
+    "{f}SystemLibraryUsage.json": [
+    ],
+    "{f}ConfLib-1.0.json": {
+      "name": "ConfLib",
+      "version": "1.0",
+      "isUsedByProject": true,
+      "title": "ConfLib",
+      "description": "Reuse (constant strings, etc)",
+      "groupName": "newlib",
+      "docsURL": null,
+      "referenceURL": null
+    },
+    "{f}ConfLib-1.0.js": "var ConfigLib = {    // preferably, load values from property files, as in Conference - Management\n    confOfferURLFragment: \"conf-offer\",\n    confManagementURLFragment: \"conf-management\",\n    confManagementURL: 'http://localhost:8080/rest/default/conf-management/v1/ProcessCharges',\n    confManagementAuth: { headers: { Authorization: \"CALiveAPICreator AcctgToken:1\" }},  // see Auth Tokens screen\n    confOfferAuth: { headers: { Authorization: \"CALiveAPICreator AdminKey:1\" }}\n    \n};\n\nvar ConfLib = {};\n// minor debug helper, to prevent NPE in logging anObject.toString\n// where anObject is null\n\nConfLib.db = function db(aMsg, aLogicContext) {\n    print(aMsg);\n    aLogicContext.logDebug(aMsg);\n};\n\n"
+  },
+  "{d}request_events": {
+    "{f}ReadMe.md": "# REQUEST EVENTS\nThis folder contains definitions for request events.\n",
+    "{f}AuditRequests.json": {
+      "name": "AuditRequests",
+      "eventType": "request",
+      "comments": "Extensible Declarative Logic: audits resource posts, per Extended Properties (so, works for any Resource you want to audit).\nYou might provide such functionality in a library, to facilitate sharing across projects.",
+      "isActive": true
+    },
+    "{f}AuditRequests.js": "if(req.verb == 'POST') {   // see PartnerPost ExtProp: { \"PersistTo\": \"PartnerPostAudit\"}\n    var title = \"conf-offer - ProcessPayload Request Event: \";\n    var extProps = null;\n    try {\n        extProps = SysUtility.getExtendedPropertiesFor(req.resourceName);\n    } catch(e) {\n        // occurs for non-resources, etc\n    }\n    if (extProps && 'object' === typeof extProps && ! Array.isArray(extProps) && extProps.hasOwnProperty('PersistTo') ) {\n        print(title + req.resourceName + \" is audited (per extProps) - persisting: \" + {msgContent: req.json});\n        var persistToResponse = SysUtility.restPost(req.localFullBaseURL + extProps.PersistTo, {}, ConfigLib.confOfferAuth, {auditContent: req.json});\n    }\n}\n"
+  },
+  "{d}resources": {
+    "{f}ReadMe.md": "# RESOURCES\nThis folder contains definitions for resources.\n",
+    "{f}apiversions.json": {
+      "v1": {
+        "name": "v1",
+        "comments": null
+      }
+    },
+    "{d}v1": {
+      "{d}Conferences_Test": {
+        "{f}Conferences_Test.json": {
+          "name": "Conferences_Test",
+          "description": "Used by Function ApprovalTest() - e.g., part of your Automated Build / Test (CI/CD) procedures.",
+          "siblingRank": 100,
+          "resourceType": "TableBased",
+          "prefix": "main",
+          "entity": "ConferenceOffers",
+          "isCollection": true,
+          "isCombined": false,
+          "filter": null,
+          "order": null,
+          "useSchemaAttributes": false,
+          "attributes": [
+            {
+              "name": "ident",
+              "attribute": "ident",
+              "description": null,
+              "isKey": false
+            },
+            {
+              "name": "name",
+              "attribute": "name",
+              "description": null,
+              "isKey": false
+            },
+            {
+              "name": "ExhibitsCost",
+              "attribute": "ExhibitsCost",
+              "description": null,
+              "isKey": false
+            },
+            {
+              "name": "TalksCost",
+              "attribute": "TalksCost",
+              "description": null,
+              "isKey": false
+            },
+            {
+              "name": "Budget",
+              "attribute": "Budget",
+              "description": null,
+              "isKey": false
+            },
+            {
+              "name": "Approved",
+              "attribute": "Approved",
+              "description": null,
+              "isKey": false
+            }
+          ]
+        },
+        "{f}get_event.js": null,
+        "{f}put_post_event.js": null,
+        "{f}extended_properties.js": null
+      },
+      "{d}ManagementAlert": {
+        "{f}ManagementAlert.json": {
+          "name": "ManagementAlert",
+          "description": "When managers set the approve flag on a Conference Offer, this resource provides mapping and transformation for the MQTT message for the Conf Management service.\n\nSee the Integration Rules (Alert Management - JSON Message).",
+          "siblingRank": 100,
+          "resourceType": "TableBased",
+          "prefix": "main",
+          "entity": "ConferenceOffers",
+          "isCollection": true,
+          "isCombined": false,
+          "filter": null,
+          "order": null,
+          "useSchemaAttributes": false,
+          "attributes": [
+            {
+              "name": "name",
+              "attribute": "name",
+              "description": null,
+              "isKey": false
+            },
+            {
+              "name": "ExhibitsCost",
+              "attribute": "ExhibitsCost",
+              "description": null,
+              "isKey": false
+            },
+            {
+              "name": "TalksCost",
+              "attribute": "TalksCost",
+              "description": null,
+              "isKey": false
+            },
+            {
+              "name": "MarketingProgramName",
+              "attribute": "MarketingProgramName",
+              "description": null,
+              "isKey": false
+            }
+          ]
+        },
+        "{f}get_event.js": null,
+        "{f}put_post_event.js": null,
+        "{f}extended_properties.js": null,
+        "{d}Talks_List": {
+          "{f}Talks_List.json": {
+            "name": "Talks_List",
+            "description": null,
+            "siblingRank": 100,
+            "resourceType": "TableBased",
+            "prefix": "main",
+            "entity": "Talks",
+            "join": "\"Conferences_ident\" = [\"ident\"]",
+            "isCollection": true,
+            "isCombined": false,
+            "filter": "\"Use\" = true",
+            "order": null,
+            "useSchemaAttributes": false,
+            "attributes": [
+              {
+                "name": "name",
+                "attribute": "name",
+                "description": null,
+                "isKey": false
+              },
+              {
+                "name": "Amount",
+                "attribute": "Amount",
+                "description": null,
+                "isKey": false
+              }
+            ]
+          },
+          "{f}get_event.js": null,
+          "{f}put_post_event.js": null,
+          "{f}extended_properties.js": null
+        }
+      },
+      "{d}PartnerConfirmation": {
+        "{f}PartnerConfirmation.json": {
+          "name": "PartnerConfirmation",
+          "description": "When managers set the Approve flag on a Conference Offer, this resource provides mapping and transformation for sending confirmations to Partners.\n\nSee the Integration Rules (Alert Management - JSON Message).\n\nThis is a good example of Data Integration, based on Multiple Data Sources, with a Virtual Foreign Key across them defined in the Schema screen.",
+          "siblingRank": 100,
+          "resourceType": "TableBased",
+          "prefix": "main",
+          "entity": "ConferenceOffers",
+          "isCollection": true,
+          "isCombined": false,
+          "filter": null,
+          "order": null,
+          "useSchemaAttributes": false,
+          "attributes": [
+            {
+              "name": "name",
+              "attribute": "name",
+              "description": null,
+              "isKey": false
+            }
+          ]
+        },
+        "{f}get_event.js": null,
+        "{f}put_post_event.js": null,
+        "{f}extended_properties.js": null,
+        "{d}Exhibits_List": {
+          "{f}Exhibits_List.json": {
+            "name": "Exhibits_List",
+            "description": null,
+            "siblingRank": 100,
+            "resourceType": "TableBased",
+            "prefix": "main",
+            "entity": "Exhibits",
+            "join": "\"Conferences_ident\" = [\"ident\"]",
+            "isCollection": true,
+            "isCombined": false,
+            "filter": "\"Use\" = true",
+            "order": null,
+            "useSchemaAttributes": false,
+            "attributes": [
+              {
+                "name": "name",
+                "attribute": "name",
+                "description": null,
+                "isKey": false
+              },
+              {
+                "name": "Quantity",
+                "attribute": "Quantity",
+                "description": null,
+                "isKey": false
+              }
+            ]
+          },
+          "{f}get_event.js": null,
+          "{f}put_post_event.js": null,
+          "{f}extended_properties.js": null
+        },
+        "{d}MarketingProgram": {
+          "{f}MarketingProgram.json": {
+            "name": "MarketingProgram",
+            "description": null,
+            "siblingRank": 100,
+            "resourceType": "TableBased",
+            "prefix": "ConfManagement",
+            "entity": "MarketingPrograms",
+            "join": "\"name\" = [\"MarketingProgramName\"]",
+            "isCollection": false,
+            "isCombined": true,
+            "filter": "",
+            "order": null,
+            "useSchemaAttributes": false,
+            "attributes": [
+              {
+                "name": "Description",
+                "attribute": "Description",
+                "description": null,
+                "isKey": false
+              },
+              {
+                "name": "ProgramName",
+                "attribute": "name",
+                "description": null,
+                "isKey": false
+              }
+            ]
+          },
+          "{f}get_event.js": null,
+          "{f}put_post_event.js": null,
+          "{f}extended_properties.js": null
+        },
+        "{d}Talks_List": {
+          "{f}Talks_List.json": {
+            "name": "Talks_List",
+            "description": null,
+            "siblingRank": 100,
+            "resourceType": "TableBased",
+            "prefix": "main",
+            "entity": "Talks",
+            "join": "\"Conferences_ident\" = [\"ident\"]",
+            "isCollection": true,
+            "isCombined": false,
+            "filter": "\"Use\" = true",
+            "order": null,
+            "useSchemaAttributes": false,
+            "attributes": [
+              {
+                "name": "name",
+                "attribute": "name",
+                "description": null,
+                "isKey": false
+              },
+              {
+                "name": "Quantity",
+                "attribute": "Quantity",
+                "description": null,
+                "isKey": false
+              }
+            ]
+          },
+          "{f}get_event.js": null,
+          "{f}put_post_event.js": null,
+          "{f}extended_properties.js": null
+        }
+      },
+      "{d}PartnerPost": {
+        "{f}PartnerPost.json": {
+          "name": "PartnerPost",
+          "description": "Partners post to this endpoint - the request data represents offers for conference participation. \nThis maps incoming requests (note Cost aliased as Price on ExhibitsList) into table rows, and saves these rows onto underlying tables ConferenceOffers, Exhibits and Talks (running any relevant rules).\n\nPosted request data is audited to PartnerPostAudit, per Extended Properties (see tab, above), and Request Event (AuditRequests).",
+          "siblingRank": 100,
+          "resourceType": "TableBased",
+          "prefix": "main",
+          "entity": "ConferenceOffers",
+          "isCollection": true,
+          "isCombined": false,
+          "filter": null,
+          "order": null,
+          "useSchemaAttributes": false,
+          "attributes": [
+            {
+              "name": "name",
+              "attribute": "name",
+              "description": null,
+              "isKey": false
+            }
+          ]
+        },
+        "{f}get_event.js": null,
+        "{f}put_post_event.js": null,
+        "{f}extended_properties.js": "{\n  \"PersistTo\": \"PartnerPostAudit\"\n}\n",
+        "{d}Exhibits_List": {
+          "{f}Exhibits_List.json": {
+            "name": "Exhibits_List",
+            "description": null,
+            "siblingRank": 100,
+            "resourceType": "TableBased",
+            "prefix": "main",
+            "entity": "Exhibits",
+            "join": "\"Conferences_ident\" = [\"ident\"]",
+            "isCollection": true,
+            "isCombined": false,
+            "filter": null,
+            "order": null,
+            "useSchemaAttributes": false,
+            "attributes": [
+              {
+                "name": "name",
+                "attribute": "name",
+                "description": null,
+                "isKey": false
+              },
+              {
+                "name": "Price",
+                "attribute": "Cost",
+                "description": null,
+                "isKey": false
+              }
+            ]
+          },
+          "{f}get_event.js": null,
+          "{f}put_post_event.js": null,
+          "{f}extended_properties.js": null
+        },
+        "{d}Talks_List": {
+          "{f}Talks_List.json": {
+            "name": "Talks_List",
+            "description": null,
+            "siblingRank": 100,
+            "resourceType": "TableBased",
+            "prefix": "main",
+            "entity": "Talks",
+            "join": "\"Conferences_ident\" = [\"ident\"]",
+            "isCollection": true,
+            "isCombined": false,
+            "filter": null,
+            "order": null,
+            "useSchemaAttributes": false,
+            "attributes": [
+              {
+                "name": "name",
+                "attribute": "name",
+                "description": null,
+                "isKey": false
+              },
+              {
+                "name": "Price",
+                "attribute": "Cost",
+                "description": null,
+                "isKey": false
+              }
+            ]
+          },
+          "{f}get_event.js": null,
+          "{f}put_post_event.js": null,
+          "{f}extended_properties.js": null
+        }
+      },
+      "{d}PartnerPostAudit": {
+        "{f}PartnerPostAudit.json": {
+          "name": "PartnerPostAudit",
+          "description": "Posts data to the ConfOfferAudits table.\n\nPartnerPost has the following Extended Property: { \"PersistTo\": \"PartnerPostAudit\"}\nThis triggers POSTs (audits) to this resource, per the Request Event (AuditRequests).",
+          "siblingRank": 100,
+          "resourceType": "TableBased",
+          "prefix": "main",
+          "entity": "ConfOfferAudits",
+          "isCollection": true,
+          "isCombined": false,
+          "filter": null,
+          "order": null,
+          "useSchemaAttributes": true
+        },
+        "{f}get_event.js": null,
+        "{f}put_post_event.js": null,
+        "{f}extended_properties.js": null
+      }
+    }
+  },
+  "{d}rules": {
+    "{f}ReadMe.md": "# RULES\nThis folder contains definitions for rules.\n",
+    "{f}prefixes.json": {
+      "ConfManagement": "ConfManagement",
+      "main": "main"
+    },
+    "{d}ConfManagement": {
+      "{f}ReadMe.md": "# RULES\nThis folder contains rules for entities in prefix ConfManagement.\n"
+    },
+    "{d}main": {
+      "{f}ReadMe.md": "# RULES\nThis folder contains rules for entities in prefix main.\n",
+      "{d}ConferenceOffers": {
+        "{f}event_alert_api.json": {
+          "name": "event_alert_api",
+          "entity": "ConferenceOffers",
+          "isActive": false,
+          "ruleType": "event",
+          "asynchronous": false,
+          "appliesTo": {
+            "insert": true,
+            "update": true,
+            "delete": true
+          },
+          "codeType": "JavaScript",
+          "isAutoTitle": false,
+          "title": "Alert Management - API",
+          "comments": "APIs are commonly used for integration.  Note, though, that when the target system is down, the post fails, and this transaction would be rolled back.,\nmaking this service less autonomous.  A more autonomous approach is shown in Alert Management - JSON Message",
+          "topics": [
+            "3. Integration"
+          ]
+        },
+        "{f}event_alert_api.js": "if (row.Approved === true && row.Approved !== oldRow.Approved) {\r    var payload = logicContext.transformCurrentRow('ManagementAlert');\r    logicContext.logDebug(\"Alert Management / API -- posting to: \" + ConfigLib.confManagementURL +\r                            \", auth: \" + JSON.stringify(ConfigLib.confManagementAuth) +\r                            \", request data: \" + payload);\r    var postResponse = SysUtility.restPost(ConfigLib.confManagementURL, null, ConfigLib.confManagementAuth, payload);\r    if (JSON.parse(postResponse).statusCode !== 201) {\r        throw \"Alert Management / API -- unexpected post response: \" + postResponse;\r    }\r}\r\n",
+        "{f}event_alert_apiXML.json": {
+          "name": "event_alert_apiXML",
+          "entity": "ConferenceOffers",
+          "isActive": false,
+          "ruleType": "event",
+          "asynchronous": false,
+          "appliesTo": {
+            "insert": true,
+            "update": true,
+            "delete": true
+          },
+          "codeType": "JavaScript",
+          "isAutoTitle": false,
+          "title": "Alert Management - XML Message",
+          "comments": "Same as \"Alert Management - JSON Message\", changed to illustrate how to format the request as xml instead of JSON",
+          "topics": [
+          ]
+        },
+        "{f}event_alert_apiXML.js": "var title = \"ConfOffer Alert: Post <XML> to Management Event - \";\nif (row.Approved === true && row.Approved !== oldRow.Approved) {\n    var msgContent = \"\";\n    var url = req.localFullBaseURL;\n    var eventGetURL = url + \"ManagementAlert\" + \"?responseformat=xml\";                // for JSON, transformCurrentRow is simpler\n    var headerSettings = { headers: {Authorization: \"CALiveAPICreator AdminKey:1\"} }; // created on Auth Tokens screen\n    var getParams = {sysfilter: \"equal(\\\"ident\\\":\" + row.ident + \")\"};\n    msgContent = SysUtility.restGet(eventGetURL , getParams, headerSettings);\n    ConfLib.db(title + \"as XML... getParms: \" + JSON.stringify(getParams) + ', url:' + eventGetURL +', xml msgContent: ' + msgContent);\n    var result = false;\n    try {\n\t    result = SysUtility.publishMessage(\"PublishManagementConnection\",\"ProcessChargesTopic\", msgContent, null);\n    } catch (e) {\n        ConfLib.db(title + \"exception: \" + e, logicContext);\n        throw e;\n    }\n\tConfLib.db(title + \"ConfOffer posted to Conference Management listener, result: \" + result, logicContext);\n}\n",
+        "{f}event_alert_json.json": {
+          "name": "event_alert_json",
+          "entity": "ConferenceOffers",
+          "isActive": true,
+          "ruleType": "event",
+          "asynchronous": false,
+          "appliesTo": {
+            "insert": false,
+            "update": true,
+            "delete": false
+          },
+          "codeType": "JavaScript",
+          "isAutoTitle": false,
+          "title": "Alert Management - JSON Message",
+          "comments": "Microservices architecture recommends that systems be autonomous, with decreased dependence on other systems. This internal communication is by way of a message (rather than an API), so that the event system functions even while Management is down.\nThis event rule type uses an MQTT message;  the same approach would be used for other message brokers.",
+          "topics": [
+            "3. Integration"
+          ]
+        },
+        "{f}event_alert_json.js": "var title = \"ConfOffer Alert: \";\rif (row.Approved === true && row.Approved !== oldRow.Approved) {\r    var msgContent = logicContext.transformCurrentRow('ManagementAlert');\r    var result = false;\r    try {\r\t    result = SysUtility.publishMessage(\"PublishManagementConnection\",\"ProcessChargesTopic\", msgContent, null);\r    } catch (e) {\r        ConfLib.db(title + \"exception: \" + e, logicContext);\r        throw e;\r    }\r\tConfLib.db(title + \"ConfOffer posted to Conference Management listener, result: \" + result, logicContext);\r\tmsgContent = logicContext.transformCurrentRow('PartnerConfirmation');\r\tif (row.PartnerURL === null) {\r\t    ConfLib.db(title + \"No Partner URL, not confirming this back to partner: \" + msgContent.substring(1,32) + \"...\", logicContext);\r\t} else {\r\t    SysUtility.restPost(row.PartnerURL, {}, row.PartnerAuth, msgContent);\r\t}\r}\r\r// built using Examples (Sending Messages) and Control-Space\r\n",
+        "{f}sum_ExhibitsCost.json": {
+          "name": "sum_ExhibitsCost",
+          "entity": "ConferenceOffers",
+          "isActive": true,
+          "ruleType": "sum",
+          "attribute": "ExhibitsCost",
+          "roleToChildren": "Exhibits_List",
+          "childAttribute": "Amount",
+          "qualification": "Use = true",
+          "isJIT": false,
+          "isAutoTitle": true,
+          "title": "ExhibitsCost = sum(Exhibits_List.Amount where Use = true)",
+          "comments": null,
+          "topics": [
+            "2. Logic"
+          ]
+        },
+        "{f}sum_TalksCost.json": {
+          "name": "sum_TalksCost",
+          "entity": "ConferenceOffers",
+          "isActive": true,
+          "ruleType": "sum",
+          "attribute": "TalksCost",
+          "roleToChildren": "Talks_List",
+          "childAttribute": "Amount",
+          "qualification": "Use = true",
+          "isJIT": false,
+          "isAutoTitle": true,
+          "title": "TalksCost = sum(Talks_List.Amount where Use = true)",
+          "comments": null,
+          "topics": [
+          ]
+        },
+        "{f}validate_Approved_HasProgram.json": {
+          "name": "validate_Approved_HasProgram",
+          "entity": "ConferenceOffers",
+          "isActive": true,
+          "ruleType": "validation",
+          "codeType": "JavaScript",
+          "errorMessage": "Sorry, you must assign to a Marketing Program before approving",
+          "problemAttributes": [
+          ],
+          "isAutoTitle": false,
+          "title": "Validation: Approval requires Marketing Program",
+          "comments": "This is an element of Data Integration, here, conditional referential integrity logic across multiple databases",
+          "topics": [
+          ]
+        },
+        "{f}validate_Approved_HasProgram.js": "if (row.Approved === true && row.MarketingProgramName === null) \n    return false;\n else \n    return true;\n",
+        "{f}validation_budget.json": {
+          "name": "validation_budget",
+          "entity": "ConferenceOffers",
+          "isActive": true,
+          "ruleType": "commitValidation",
+          "codeType": "JavaScript",
+          "errorMessage": "Sorry, Budget Exceeded",
+          "problemAttributes": [
+          ],
+          "isAutoTitle": false,
+          "title": "Validation: row.Budget >= (row.ExhibitsCost + row.TalksCost)",
+          "comments": null,
+          "topics": [
+            "2. Logic"
+          ]
+        },
+        "{f}validation_budget.js": "return (row.Budget >= (row.ExhibitsCost + row.TalksCost));\n"
+      },
+      "{d}ConfOfferAudits": {
+        "{f}formula_auditDatetime.json": {
+          "name": "formula_auditDatetime",
+          "entity": "ConfOfferAudits",
+          "isActive": true,
+          "ruleType": "formula",
+          "attribute": "auditDatetime",
+          "codeType": "JavaScript",
+          "isJIT": false,
+          "isAutoTitle": false,
+          "title": "Audit PartnerPosts",
+          "comments": "See Resource PartnerPost.  Note Extended Properties, which trigger audit to PartnerPostAudit (a resource on this ConfOfferAudits).",
+          "topics": [
+            "1. Post"
+          ]
+        },
+        "{f}formula_auditDatetime.js": "if (row.auditDatetime === null) {\n    return new Date();\n}\nelse {\n    return row.Alerts_datetime;\n}\n"
+      },
+      "{d}Exhibits": {
+        "{f}formula_Amount.json": {
+          "name": "formula_Amount",
+          "entity": "Exhibits",
+          "isActive": true,
+          "ruleType": "formula",
+          "attribute": "Amount",
+          "codeType": "JavaScript",
+          "isJIT": false,
+          "isAutoTitle": false,
+          "title": "Amount = Cost * Quantity",
+          "comments": "JavaScript provides if-null/else support - (row.Quantity || 1) returns 1 if the Quantity is null.",
+          "topics": [
+            "2. Logic"
+          ]
+        },
+        "{f}formula_Amount.js": "var qty = row.Quantity || 1;  // idiomatic JavaScript for 1 if quantity is null\nif (row.Use === false)\n    log.debug(\"refer to Use so that derivation re-run if Use reset (for default value, above\");\nreturn row.Cost * qty;\n"
+      },
+      "{d}Talks": {
+        "{f}formula_Amount.json": {
+          "name": "formula_Amount",
+          "entity": "Talks",
+          "isActive": true,
+          "ruleType": "formula",
+          "attribute": "Amount",
+          "codeType": "JavaScript",
+          "isJIT": false,
+          "isAutoTitle": false,
+          "title": "Amount = Cost * Quantity",
+          "comments": null,
+          "topics": [
+            "2. Logic"
+          ]
+        },
+        "{f}formula_Amount.js": "var qty = row.Quantity || 1;  // idiomatic JavaScript for 1 if quantity is null\nif (row.Use === false)\n    log.debug(\"refer to Use so that derivation re-run if Use reset (for default value, above\");\nreturn row.Cost * qty;\n"
+      }
+    }
+  },
+  "{d}security": {
+    "{f}ReadMe.md": "# SECURITY\nThis folder contains definitions for security.\n",
+    "{d}roles": {
+      "{f}ReadMe.md": "# ROLES\nThis contains Roles defined for the project.\nRoles define which server features are available and what the permissions\non each feature is enabled.\n",
+      "{f}API$0020Documentation.json": {
+        "name": "API Documentation",
+        "description": "This role is special and is used when generating OpenAPI(Swagger) documentation. It is recognized by the name special name 'API Documentation' and used only for documentation calls.\n Any Resources, Tables, Views, Procedures etc. that are defined and enabled by this role are used to generate the OpenAPI(Swagger) documentation.\n If this role is assigned to a user it will NOT be used for execution permissions.\n If this role is removed or otherwise unavailable, the Swagger/OpenAPI documentation will be nothing more that a name and version.",
+        "defaultTablePermission": "A",
+        "defaultViewPermission": "A",
+        "defaultFunctionPermission": "X",
+        "globals": [
+        ],
+        "apiVisibility": {
+          "table": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "view": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "resource": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "procedure": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "metatable": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "function": {
+            "isRestricted": false,
+            "restrictedTo": null
+          }
+        },
+        "entityPermission": {
+        },
+        "functionPermission": {
+        }
+      },
+      "{f}Event$0020Organizer.json": {
+        "name": "Event Organizer",
+        "description": null,
+        "defaultTablePermission": "A",
+        "defaultViewPermission": "A",
+        "defaultFunctionPermission": "X",
+        "globals": [
+        ],
+        "apiVisibility": {
+          "table": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "view": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "resource": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "procedure": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "metatable": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "function": {
+            "isRestricted": false,
+            "restrictedTo": null
+          }
+        },
+        "entityPermission": {
+          "Secret Conferences": {
+            "entity": "main:ConferenceOffers",
+            "description": "Hide secret events (row level security)",
+            "accessLevels": [
+              "ALL"
+            ],
+            "rowFilter": "name not like '%secret%'",
+            "columnFilter": {
+              "isRestricted": false,
+              "restrictedTo": null
+            }
+          }
+        },
+        "functionPermission": {
+        }
+      },
+      "{f}Full$0020access.json": {
+        "name": "Full access",
+        "description": "Full access to everything in this project",
+        "defaultTablePermission": "A",
+        "defaultViewPermission": "A",
+        "defaultFunctionPermission": "X",
+        "globals": [
+        ],
+        "apiVisibility": {
+          "table": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "view": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "resource": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "procedure": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "metatable": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "function": {
+            "isRestricted": false,
+            "restrictedTo": null
+          }
+        },
+        "entityPermission": {
+        },
+        "functionPermission": {
+        }
+      },
+      "{f}Read$0020only.json": {
+        "name": "Read only",
+        "description": "Read-only access to everything in this project",
+        "defaultTablePermission": "R",
+        "defaultViewPermission": "R",
+        "defaultFunctionPermission": "N",
+        "globals": [
+        ],
+        "apiVisibility": {
+          "table": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "view": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "resource": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "procedure": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "metatable": {
+            "isRestricted": false,
+            "restrictedTo": null
+          },
+          "function": {
+            "isRestricted": false,
+            "restrictedTo": null
+          }
+        },
+        "entityPermission": {
+        },
+        "functionPermission": {
+        }
+      }
+    },
+    "{d}authtokens": {
+      "{f}ReadMe.md": "# AUTHTOKENS\nThis contains statically defined API Keys (Auth Tokens) for this project.\nDynamically created keys (using @authentication service) are NOT exported.\n",
+      "{f}Admin$0020key.json": {
+        "name": "Admin key",
+        "authToken": "AdminKey",
+        "description": "Created as part of this API. Feel free to change or delete this auth token.",
+        "userIdentifier": null,
+        "isActive": true,
+        "expiration": null,
+        "logging": "*=FINE",
+        "roles": [
+          "Full access"
+        ],
+        "globals": {
+        }
+      },
+      "{f}Conferences$0020Key.json": {
+        "name": "Conferences Key",
+        "authToken": "ConferencesKey",
+        "description": null,
+        "userIdentifier": null,
+        "isActive": true,
+        "expiration": null,
+        "logging": "*=FINE",
+        "roles": [
+          "Event Organizer"
+        ],
+        "globals": {
+        }
+      }
+    },
+    "{d}users": {
+      "{f}ReadMe.md": "# USERS\nThis contains Users defined for the system when using the default authentication provider.\nWhile this can be used for production systems, typically the authentication provider is LDAP\nor some other mechanism.\n",
+      "{f}admin.json": {
+        "name": "admin",
+        "fullname": "Admin user",
+        "email": "apideveloper@user.com",
+        "isActive": true,
+        "comments": null,
+        "keyLifetimeSeconds": 86400,
+        "passwordHash": "L0ifHdNZQu1YVtZCkC2wFZCNA6ltYkR3IVxt7Psp4zYuqfA0oM0GHHKaWCMqljT1WZK6tYqIuRQAnetVOEPIOg==",
+        "passwordSalt": "KuUWeKMBwXr1Md3PWfpmvgzCnv2Fz1IJQ0Z6wl1N",
+        "roles": [
+          "Full access"
+        ],
+        "globals": {
+        }
+      },
+      "{f}demo.json": {
+        "name": "demo",
+        "fullname": "Demo User",
+        "email": "apideveloper@user.com",
+        "isActive": true,
+        "comments": null,
+        "keyLifetimeSeconds": 86400,
+        "passwordHash": "zbDZ2lZVbzJCDxRYmbqe9Hly5h4/5YyG6NFn11/XAQI6O6GiGCWOCQCEnyXJHHFTRMMv7wp8syW0yXcGNCQ86Q==",
+        "passwordSalt": "VhsQcoiBDU2odVuLZ7chXTUiW338VZjEzNafFStz",
+        "roles": [
+          "Full access"
+        ],
+        "globals": {
+        }
+      }
+    }
+  },
+  "{d}sorts": {
+    "{f}ReadMe.md": "# SORTS\nThis folder contains definitions for sorts.\n"
+  },
+  "{d}timers": {
+    "{f}ReadMe.md": "# TIMERS\nThis folder contains definitions for timers.\n"
+  },
+  "{d}topics": {
+    "{f}ReadMe.md": "# TOPICS\nThis folder contains definitions for topics.\n",
+    "{f}$0031.$0020Post.json": {
+      "name": "1. Post",
+      "color": "#a4cdff",
+      "summary": "Logic for default values on PartnerPost."
+    },
+    "{f}$0031.$0020Post.html": "<p>As a Marketing Manager, I want to enable our Partners to send us Conference&nbsp;Offers to participate in their events.</p>\n\n<p>Offers provide Options for Talks (Speaking Opportunities), and Exhibits. &nbsp;These include Costs.</p>\n\n<p>Acceptance Criteria:</p>\n\n<ol>\n\t<li>Partner can post with this information</li>\n\t<li>Post request data is&nbsp;audited, for admin tracking and error recovery.</li>\n\t<li>Conference Offer data is stored in a local database</li>\n\t<li>A Web App, for users to mark Talks/Exhibits as Used, and approve offers</li>\n</ol>\n",
+    "{f}$0032.$0020Logic.json": {
+      "name": "2. Logic",
+      "color": "#ffd2d1",
+      "summary": "Organizers Set Used"
+    },
+    "{f}$0032.$0020Logic.html": "<p>As a Marketing Manager, I need a Web App to denote which Exhibit / Talk to Use.<br />\n<br />\nAcceptance Criteria:</p>\n\n<ol>\n\t<li>Web App to review Conferences, mark Talks/Exhibits as Used</li>\n\t<li>Verify Cost roll-ups</li>\n\t<li>Verify within Budget</li>\n</ol>\n",
+    "{f}$0033.$0020Integration.json": {
+      "name": "3. Integration",
+      "color": "#95c48a",
+      "summary": "Managers Approve"
+    },
+    "{f}$0033.$0020Integration.html": "<p>As a Marketing Executive, I need a Web App to <strong>Approve</strong> Conferences, subject to Budget Constraints.&nbsp; Approvals integrate with Management Systems, and Post a confirmation to the Partner (if they provide a URL).<br />\n<br />\nAcceptance Criteria:</p>\n\n<ol>\n\t<li>Web App to denote Approved</li>\n\t<li>If ok, forward message (MQTT) to Management</li>\n\t<li>If URL provided, Post Confirmation to Partner</li>\n</ol>\n"
+  },
+  "{d}applications": {
+    "{f}ReadMe.md": "# APPLICATIONS\nThis folder contains definitions for applications.\n",
+    "{d}options": {
+      "{f}ReadMe.md": "# APPLICATION OPTIONS\nThis folder contains definitions for application options.\n"
+    },
+    "{d}skins": {
+      "{f}ReadMe.md": "# APPLICATION SKINS\nThis folder contains definitions for application skins.\n"
+    },
+    "{d}settings": {
+      "{f}ReadMe.md": "# APPLICATION SETTINGS\nThis folder contains definitions for application settings.\n",
+      "{f}ConfManagement$003aCharges.json": {
+        "tableName": "ConfManagement:Charges",
+        "state": "eyJuYW1lIjoiQ29uZk1hbmFnZW1lbnQ6Q2hhcmdlcyIsImFsaWFzIjoiQ29uZk1hbmFnZW1lbnQ6Q2hhcmdlcyIsImNvbHVtbkZvcm1hdHMiOnsiaWRlbnQiOnsibmFtZSI6ImlkZW50IiwiYWxpYXMiOiJJZGVudCIsInR5cGUiOiJJTlRFR0VSIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjpmYWxzZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJudW1iZXIiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6ImlkZW50Iiwid2lkdGgiOjExMy4zMzIzNTI5NDExNzY0NSwiJCRoYXNoS2V5IjoiMDNOIn0sIm5hbWUiOnsibmFtZSI6Im5hbWUiLCJhbGlhcyI6Ik5hbWUiLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Im5hbWUiLCJ3aWR0aCI6NDU1LjMzNTI5NDExNzY0NywiJCRoYXNoS2V5IjoiMDNPIn0sIkNvc3RfVGFsa3MiOnsibmFtZSI6IkNvc3RfVGFsa3MiLCJhbGlhcyI6IkNvc3QgVGFsa3MiLCJ0eXBlIjoiREVDSU1BTCIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6IiQwLDAuMDAiLCJtYXNrVHlwZSI6Im51bWVyaWMiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IkNvc3RfVGFsa3MiLCJ3aWR0aCI6MTEzLjMzMjM1Mjk0MTE3NjQ1LCIkJGhhc2hLZXkiOiIwM1AifSwiQ29zdF9FeGhpYml0cyI6eyJuYW1lIjoiQ29zdF9FeGhpYml0cyIsImFsaWFzIjoiQ29zdCBFeGhpYml0cyIsInR5cGUiOiJERUNJTUFMIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjoiJDAsMC4wMCIsIm1hc2tUeXBlIjoibnVtZXJpYyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiQ29zdF9FeGhpYml0cyIsIiQkaGFzaEtleSI6IjAzUSJ9LCJTb3VyY2VJZGVudCI6eyJuYW1lIjoiU291cmNlSWRlbnQiLCJhbGlhcyI6IlNvdXJjZSBJZGVudCIsInR5cGUiOiJJTlRFR0VSIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6Im51bWJlciIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiU291cmNlSWRlbnQiLCIkJGhhc2hLZXkiOiIwM1IifSwiQWxlcnRJZGVudCI6eyJuYW1lIjoiQWxlcnRJZGVudCIsImFsaWFzIjoiQWxlcnQgSWRlbnQiLCJ0eXBlIjoiSU5URUdFUiIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJudW1iZXIiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IkFsZXJ0SWRlbnQiLCIkJGhhc2hLZXkiOiIwM1MifSwiTWFya2V0aW5nUHJvZ3JhbU5hbWUiOnsibmFtZSI6Ik1hcmtldGluZ1Byb2dyYW1OYW1lIiwiYWxpYXMiOiJNYXJrZXRpbmcgUHJvZ3JhbSBOYW1lIiwidHlwZSI6IlZBUkNIQVIiLCJnZW5lcmljX3R5cGUiOiJzdHJpbmciLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoic3RyaW5nIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJNYXJrZXRpbmdQcm9ncmFtTmFtZSIsIiQkaGFzaEtleSI6IjAzVCJ9fSwiZ3JpZENvbHVtbnMiOnsiaWRlbnQiOnsibmFtZSI6ImlkZW50IiwiYWxpYXMiOiJJZGVudCIsInR5cGUiOiJJTlRFR0VSIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjpmYWxzZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJudW1iZXIiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6ImlkZW50Iiwid2lkdGgiOjExNC4zMjk0MTE3NjQ3MDU4OCwiJCRoYXNoS2V5IjoiMDNOIn0sIm5hbWUiOnsibmFtZSI6Im5hbWUiLCJhbGlhcyI6Ik5hbWUiLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Im5hbWUiLCJ3aWR0aCI6NDU5LjM0MTE3NjQ3MDU4ODI3LCIkJGhhc2hLZXkiOiIwM08ifSwiQ29zdF9UYWxrcyI6eyJuYW1lIjoiQ29zdF9UYWxrcyIsImFsaWFzIjoiQ29zdCBUYWxrcyIsInR5cGUiOiJERUNJTUFMIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjoiJDAsMC4wMCIsIm1hc2tUeXBlIjoibnVtZXJpYyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiQ29zdF9UYWxrcyIsIndpZHRoIjoxMTQuMzI5NDExNzY0NzA1ODgsIiQkaGFzaEtleSI6IjAzUCJ9fSwic2NhbGFyQ29sdW1ucyI6eyJpZGVudCI6eyJuYW1lIjoiaWRlbnQiLCJhbGlhcyI6IklkZW50IiwidHlwZSI6IklOVEVHRVIiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOmZhbHNlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6Im51bWJlciIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiaWRlbnQiLCJ3aWR0aCI6MTE0LCIkJGhhc2hLZXkiOiIwM04ifSwibmFtZSI6eyJuYW1lIjoibmFtZSIsImFsaWFzIjoiTmFtZSIsInR5cGUiOiJWQVJDSEFSIiwiZ2VuZXJpY190eXBlIjoic3RyaW5nIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6InN0cmluZyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoibmFtZSIsIndpZHRoIjo0NTksIiQkaGFzaEtleSI6IjAzTyJ9LCJDb3N0X1RhbGtzIjp7Im5hbWUiOiJDb3N0X1RhbGtzIiwiYWxpYXMiOiJDb3N0IFRhbGtzIiwidHlwZSI6IkRFQ0lNQUwiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOiIkMCwwLjAwIiwibWFza1R5cGUiOiJudW1lcmljIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJDb3N0X1RhbGtzIiwid2lkdGgiOjExNCwiJCRoYXNoS2V5IjoiMDNQIn0sIkNvc3RfRXhoaWJpdHMiOnsibmFtZSI6IkNvc3RfRXhoaWJpdHMiLCJhbGlhcyI6IkNvc3QgRXhoaWJpdHMiLCJ0eXBlIjoiREVDSU1BTCIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6IiQwLDAuMDAiLCJtYXNrVHlwZSI6Im51bWVyaWMiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IkNvc3RfRXhoaWJpdHMiLCIkJGhhc2hLZXkiOiIwM1EifSwiU291cmNlSWRlbnQiOnsibmFtZSI6IlNvdXJjZUlkZW50IiwiYWxpYXMiOiJTb3VyY2UgSWRlbnQiLCJ0eXBlIjoiSU5URUdFUiIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJudW1iZXIiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IlNvdXJjZUlkZW50IiwiJCRoYXNoS2V5IjoiMDNSIn0sIkFsZXJ0SWRlbnQiOnsibmFtZSI6IkFsZXJ0SWRlbnQiLCJhbGlhcyI6IkFsZXJ0IElkZW50IiwidHlwZSI6IklOVEVHRVIiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoibnVtYmVyIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJBbGVydElkZW50IiwiJCRoYXNoS2V5IjoiMDNTIn0sIk1hcmtldGluZ1Byb2dyYW1OYW1lIjp7Im5hbWUiOiJNYXJrZXRpbmdQcm9ncmFtTmFtZSIsImFsaWFzIjoiTWFya2V0aW5nIFByb2dyYW0gTmFtZSIsInR5cGUiOiJWQVJDSEFSIiwiZ2VuZXJpY190eXBlIjoic3RyaW5nIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6InN0cmluZyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiTWFya2V0aW5nUHJvZ3JhbU5hbWUiLCIkJGhhc2hLZXkiOiIwM1QifX0sInBhcmVudFNldHRpbmdzIjp7fSwiZGVmYXVsdFRhYmxlIjpmYWxzZSwid2luZG93cyI6WyJtYWluIiwiZm9ybSIsImNoaWxkIl0sImNoaWxkcmVuU2V0dGluZ3MiOnt9LCJncm91cHMiOltdLCJsYWJlbFBsYWNlbWVudCI6IkxlZnQifQ==",
+        "objectType": "table"
+      },
+      "{f}$005f_settings__.json": {
+        "tableName": "__settings__",
+        "state": "eyJuYW1lIjoiX19zZXR0aW5nc19fIiwibGlua3MiOlt7Im5hbWUiOiJDb25mZXJlbmNlIE9mZmVycyIsInRhYmxlIjoibWFpbjpDb25mZXJlbmNlT2ZmZXJzIiwibWFpbiI6dHJ1ZSwiZm9ybSI6dHJ1ZSwiY2hpbGQiOnRydWV9LHsibmFtZSI6Ik1hbmFnZW1lbnQgQ2hhcmdlcyIsInRhYmxlIjoiQ29uZk1hbmFnZW1lbnQ6Q2hhcmdlcyIsIm1haW4iOnRydWUsImZvcm0iOnRydWUsImNoaWxkIjp0cnVlfV0sImRlZmF1bHRUYWJsZSI6Im1haW46Q29uZmVyZW5jZU9mZmVycyIsIm1heENvbHMiOjN9",
+        "objectType": "table"
+      },
+      "{f}main$003aConferenceOffers.json": {
+        "tableName": "main:ConferenceOffers",
+        "state": "eyJuYW1lIjoibWFpbjpDb25mZXJlbmNlT2ZmZXJzIiwiYWxpYXMiOiJtYWluOkNvbmZlcmVuY2VPZmZlcnMiLCJjb2x1bW5Gb3JtYXRzIjp7ImlkZW50Ijp7Im5hbWUiOiJpZGVudCIsImFsaWFzIjoiSWRlbnQiLCJ0eXBlIjoiSU5URUdFUiIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6ZmFsc2UsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoibnVtYmVyIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJpZGVudCJ9LCJuYW1lIjp7Im5hbWUiOiJuYW1lIiwiYWxpYXMiOiJOYW1lIiwidHlwZSI6IlZBUkNIQVIiLCJnZW5lcmljX3R5cGUiOiJzdHJpbmciLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoic3RyaW5nIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJuYW1lIiwid2lkdGgiOjU0NS42fSwiRXhoaWJpdHNDb3N0Ijp7Im5hbWUiOiJFeGhpYml0c0Nvc3QiLCJhbGlhcyI6IkV4aGliaXRzIENvc3QiLCJ0eXBlIjoiREVDSU1BTCIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjpmYWxzZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOiIkMCwwLjAwIiwibWFza1R5cGUiOiJudW1lcmljIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJFeGhpYml0c0Nvc3QifSwiVGFsa3NDb3N0Ijp7Im5hbWUiOiJUYWxrc0Nvc3QiLCJhbGlhcyI6IlRhbGtzIENvc3QiLCJ0eXBlIjoiREVDSU1BTCIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjpmYWxzZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOiIkMCwwLjAwIiwibWFza1R5cGUiOiJudW1lcmljIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJUYWxrc0Nvc3QifSwiQnVkZ2V0Ijp7Im5hbWUiOiJCdWRnZXQiLCJhbGlhcyI6IkJ1ZGdldCIsInR5cGUiOiJERUNJTUFMIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjoiJDAsMC4wMCIsIm1hc2tUeXBlIjoibnVtZXJpYyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiQnVkZ2V0In0sIkFwcHJvdmVkIjp7Im5hbWUiOiJBcHByb3ZlZCIsImFsaWFzIjoiQXBwcm92ZWQiLCJ0eXBlIjoiQk9PTEVBTiIsImdlbmVyaWNfdHlwZSI6ImJvb2xlYW4iLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoiYm9vbGVhbiIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiQXBwcm92ZWQiLCJ3aWR0aCI6MTM2LjR9LCJFdmVudHNfYmluYXJ5Ijp7Im5hbWUiOiJFdmVudHNfYmluYXJ5IiwiYWxpYXMiOiJFdmVudHMgQmluYXJ5IiwidHlwZSI6IkJMT0IiLCJnZW5lcmljX3R5cGUiOiJiaW5hcnkiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoiYmluYXJ5IiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJFdmVudHNfYmluYXJ5In0sIk1hcmtldGluZ1Byb2dyYW1OYW1lIjp7Im5hbWUiOiJNYXJrZXRpbmdQcm9ncmFtTmFtZSIsImFsaWFzIjoiTWFya2V0aW5nIFByb2dyYW0gTmFtZSIsInR5cGUiOiJWQVJDSEFSIiwiZ2VuZXJpY190eXBlIjoic3RyaW5nIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6InN0cmluZyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiTWFya2V0aW5nUHJvZ3JhbU5hbWUifSwiUGFydG5lclVSTCI6eyJuYW1lIjoiUGFydG5lclVSTCIsImFsaWFzIjoiUGFydG5lciBVUkwiLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IlBhcnRuZXJVUkwifSwiUGFydG5lckF1dGgiOnsibmFtZSI6IlBhcnRuZXJBdXRoIiwiYWxpYXMiOiJQYXJ0bmVyIEF1dGgiLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IlBhcnRuZXJBdXRoIn19LCJncmlkQ29sdW1ucyI6eyJuYW1lIjp7Im5hbWUiOiJuYW1lIiwiYWxpYXMiOiJOYW1lIiwidHlwZSI6IlZBUkNIQVIiLCJnZW5lcmljX3R5cGUiOiJzdHJpbmciLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoic3RyaW5nIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJuYW1lIiwid2lkdGgiOjUwNC43OTk5OTk5OTk5OTk5NX0sIkFwcHJvdmVkIjp7Im5hbWUiOiJBcHByb3ZlZCIsImFsaWFzIjoiQXBwcm92ZWQiLCJ0eXBlIjoiQk9PTEVBTiIsImdlbmVyaWNfdHlwZSI6ImJvb2xlYW4iLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoiYm9vbGVhbiIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiQXBwcm92ZWQiLCJ3aWR0aCI6MTI2LjE5OTk5OTk5OTk5OTk5fX0sInNjYWxhckNvbHVtbnMiOnsiaWRlbnQiOnsibmFtZSI6ImlkZW50IiwiYWxpYXMiOiJJZGVudCIsInR5cGUiOiJJTlRFR0VSIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjpmYWxzZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJudW1iZXIiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6ImlkZW50In0sIm5hbWUiOnsibmFtZSI6Im5hbWUiLCJhbGlhcyI6Ik5hbWUiLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Im5hbWUiLCJ3aWR0aCI6NTQ1LjZ9LCJFeGhpYml0c0Nvc3QiOnsibmFtZSI6IkV4aGliaXRzQ29zdCIsImFsaWFzIjoiRXhoaWJpdHMgQ29zdCIsInR5cGUiOiJERUNJTUFMIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOmZhbHNlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6IiQwLDAuMDAiLCJtYXNrVHlwZSI6Im51bWVyaWMiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IkV4aGliaXRzQ29zdCJ9LCJUYWxrc0Nvc3QiOnsibmFtZSI6IlRhbGtzQ29zdCIsImFsaWFzIjoiVGFsa3MgQ29zdCIsInR5cGUiOiJERUNJTUFMIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOmZhbHNlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6IiQwLDAuMDAiLCJtYXNrVHlwZSI6Im51bWVyaWMiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IlRhbGtzQ29zdCJ9LCJCdWRnZXQiOnsibmFtZSI6IkJ1ZGdldCIsImFsaWFzIjoiQnVkZ2V0IiwidHlwZSI6IkRFQ0lNQUwiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOiIkMCwwLjAwIiwibWFza1R5cGUiOiJudW1lcmljIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJCdWRnZXQifSwiQXBwcm92ZWQiOnsibmFtZSI6IkFwcHJvdmVkIiwiYWxpYXMiOiJBcHByb3ZlZCIsInR5cGUiOiJCT09MRUFOIiwiZ2VuZXJpY190eXBlIjoiYm9vbGVhbiIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJib29sZWFuIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJBcHByb3ZlZCIsIndpZHRoIjoxMzYuNH0sIkV2ZW50c19iaW5hcnkiOnsibmFtZSI6IkV2ZW50c19iaW5hcnkiLCJhbGlhcyI6IkV2ZW50cyBCaW5hcnkiLCJ0eXBlIjoiQkxPQiIsImdlbmVyaWNfdHlwZSI6ImJpbmFyeSIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJiaW5hcnkiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IkV2ZW50c19iaW5hcnkifSwiTWFya2V0aW5nUHJvZ3JhbU5hbWUiOnsibmFtZSI6Ik1hcmtldGluZ1Byb2dyYW1OYW1lIiwiYWxpYXMiOiJNYXJrZXRpbmcgUHJvZ3JhbSBOYW1lIiwidHlwZSI6IlZBUkNIQVIiLCJnZW5lcmljX3R5cGUiOiJzdHJpbmciLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoic3RyaW5nIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJNYXJrZXRpbmdQcm9ncmFtTmFtZSJ9LCJQYXJ0bmVyVVJMIjp7Im5hbWUiOiJQYXJ0bmVyVVJMIiwiYWxpYXMiOiJQYXJ0bmVyIFVSTCIsInR5cGUiOiJWQVJDSEFSIiwiZ2VuZXJpY190eXBlIjoic3RyaW5nIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6InN0cmluZyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiUGFydG5lclVSTCJ9LCJQYXJ0bmVyQXV0aCI6eyJuYW1lIjoiUGFydG5lckF1dGgiLCJhbGlhcyI6IlBhcnRuZXIgQXV0aCIsInR5cGUiOiJWQVJDSEFSIiwiZ2VuZXJpY190eXBlIjoic3RyaW5nIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6InN0cmluZyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiUGFydG5lckF1dGgifX0sInBhcmVudFNldHRpbmdzIjp7Ik1hcmtldGluZ1Byb2dyYW0iOnsibmFtZSI6Ik1hcmtldGluZ1Byb2dyYW0iLCJwYXJlbnRfbmFtZSI6IkNvbmZNYW5hZ2VtZW50Ok1hcmtldGluZ1Byb2dyYW1zIiwicGFyZW50X3RhYmxlIjoiQ29uZk1hbmFnZW1lbnQ6TWFya2V0aW5nUHJvZ3JhbXMiLCJwYXJlbnRfZW50aXR5IjoiQ29uZk1hbmFnZW1lbnQ6TWFya2V0aW5nUHJvZ3JhbXMiLCJjaGlsZF9uYW1lIjoibWFpbjpDb25mZXJlbmNlT2ZmZXJzIiwiY2hpbGRfdGFibGUiOiJtYWluOkNvbmZlcmVuY2VPZmZlcnMiLCJjaGlsZF9lbnRpdHkiOiJtYWluOkNvbmZlcmVuY2VPZmZlcnMiLCJhbGlhcyI6Ik1hcmtldGluZ1Byb2dyYW0iLCJyZWxhdGlvbnNoaXBfbmFtZSI6InRtcC0yMDAxLWp2aHV3ZXNvcGFmcG9yb2ttYWZhIiwiY29sdW1uRm9ybWF0cyI6eyJuYW1lIjp7Im5hbWUiOiJuYW1lIiwiYWxpYXMiOiJNYXJrZXRpbmdQcm9ncmFtcyBOYW1lIiwidHlwZSI6IlZBUkNIQVIiLCJnZW5lcmljX3R5cGUiOiJzdHJpbmciLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOmZhbHNlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6InN0cmluZyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiX19pbnRlcm5hbC5wYXJlbnRSb3dzLk1hcmtldGluZ1Byb2dyYW0ubmFtZSIsInBhcmVudFJvbGUiOiJNYXJrZXRpbmdQcm9ncmFtIn0sIkJ1ZGdldCI6eyJuYW1lIjoiQnVkZ2V0IiwiYWxpYXMiOiJNYXJrZXRpbmdQcm9ncmFtcyBCdWRnZXQiLCJ0eXBlIjoiREVDSU1BTCIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6IiQwLDAuMDAiLCJtYXNrVHlwZSI6Im51bWVyaWMiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Il9faW50ZXJuYWwucGFyZW50Um93cy5NYXJrZXRpbmdQcm9ncmFtLkJ1ZGdldCIsInBhcmVudFJvbGUiOiJNYXJrZXRpbmdQcm9ncmFtIn0sIkNoYXJnZXMiOnsibmFtZSI6IkNoYXJnZXMiLCJhbGlhcyI6Ik1hcmtldGluZ1Byb2dyYW1zIENoYXJnZXMiLCJ0eXBlIjoiREVDSU1BTCIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6IiQwLDAuMDAiLCJtYXNrVHlwZSI6Im51bWVyaWMiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Il9faW50ZXJuYWwucGFyZW50Um93cy5NYXJrZXRpbmdQcm9ncmFtLkNoYXJnZXMiLCJwYXJlbnRSb2xlIjoiTWFya2V0aW5nUHJvZ3JhbSJ9LCJJc0FjdGl2ZSI6eyJuYW1lIjoiSXNBY3RpdmUiLCJhbGlhcyI6Ik1hcmtldGluZ1Byb2dyYW1zIElzIEFjdGl2ZSIsInR5cGUiOiJCT09MRUFOIiwiZ2VuZXJpY190eXBlIjoiYm9vbGVhbiIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJib29sZWFuIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJfX2ludGVybmFsLnBhcmVudFJvd3MuTWFya2V0aW5nUHJvZ3JhbS5Jc0FjdGl2ZSIsInBhcmVudFJvbGUiOiJNYXJrZXRpbmdQcm9ncmFtIn0sIkRlc2NyaXB0aW9uIjp7Im5hbWUiOiJEZXNjcmlwdGlvbiIsImFsaWFzIjoiTWFya2V0aW5nUHJvZ3JhbXMgRGVzY3JpcHRpb24iLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Il9faW50ZXJuYWwucGFyZW50Um93cy5NYXJrZXRpbmdQcm9ncmFtLkRlc2NyaXB0aW9uIiwicGFyZW50Um9sZSI6Ik1hcmtldGluZ1Byb2dyYW0ifX19fSwiZGVmYXVsdFRhYmxlIjoibWFpbjpDb25mZXJlbmNlT2ZmZXJzIiwid2luZG93cyI6WyJtYWluIiwiY2hpbGQiLCJmb3JtIl0sImNoaWxkcmVuU2V0dGluZ3MiOnsiRXhoaWJpdHNfTGlzdCI6eyJuYW1lIjoiRXhoaWJpdHNfTGlzdCIsInRhYmxlTmFtZSI6Im1haW46RXhoaWJpdHMiLCJhbGlhcyI6IkV4aGliaXRzIiwiZGlzcGxheWVkIjp0cnVlLCJzZWxlY3RlZCI6ZmFsc2UsImNvbHVtbkZvcm1hdHMiOnsiaWRlbnQiOnsibmFtZSI6ImlkZW50IiwiYWxpYXMiOiJJZGVudCIsInR5cGUiOiJJTlRFR0VSIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjpmYWxzZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJudW1iZXIiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6ImlkZW50In0sIm5hbWUiOnsibmFtZSI6Im5hbWUiLCJhbGlhcyI6Ik5hbWUiLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Im5hbWUiLCJ3aWR0aCI6NTExLjV9LCJDb25mZXJlbmNlc19pZGVudCI6eyJuYW1lIjoiQ29uZmVyZW5jZXNfaWRlbnQiLCJhbGlhcyI6IkNvbmZlcmVuY2VzIElkZW50IiwidHlwZSI6IklOVEVHRVIiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoibnVtYmVyIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJDb25mZXJlbmNlc19pZGVudCJ9LCJDb3N0Ijp7Im5hbWUiOiJDb3N0IiwiYWxpYXMiOiJDb3N0IiwidHlwZSI6IkRFQ0lNQUwiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOiIkMCwwLjAwIiwibWFza1R5cGUiOiJudW1lcmljIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJDb3N0Iiwid2lkdGgiOjEyNy44NzV9LCJVc2UiOnsibmFtZSI6IlVzZSIsImFsaWFzIjoiVXNlIiwidHlwZSI6IkJPT0xFQU4iLCJnZW5lcmljX3R5cGUiOiJib29sZWFuIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6ImJvb2xlYW4iLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IlVzZSIsIndpZHRoIjoxMjcuODc1fSwiUXVhbnRpdHkiOnsibmFtZSI6IlF1YW50aXR5IiwiYWxpYXMiOiJRdWFudGl0eSIsInR5cGUiOiJJTlRFR0VSIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6Im51bWJlciIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiUXVhbnRpdHkiLCJ3aWR0aCI6MTI3Ljg3NX0sIkFtb3VudCI6eyJuYW1lIjoiQW1vdW50IiwiYWxpYXMiOiJBbW91bnQiLCJ0eXBlIjoiREVDSU1BTCIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6IiQwLDAuMDAiLCJtYXNrVHlwZSI6Im51bWVyaWMiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IkFtb3VudCIsIndpZHRoIjoxMjcuODc1fX0sInJlbGF0aW9uc2hpcF9uYW1lIjoidG1wLTIwMDEtaGV0dGhmbWZqcWN4Zmx5c29rZXUiLCJjaGlsZF90YWJsZSI6Im1haW46RXhoaWJpdHMiLCJkb3dubG9hZGFibGUiOmZhbHNlLCJncmlkQ29sdW1ucyI6eyJuYW1lIjp7Im5hbWUiOiJuYW1lIiwiYWxpYXMiOiJOYW1lIiwidHlwZSI6IlZBUkNIQVIiLCJnZW5lcmljX3R5cGUiOiJzdHJpbmciLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoic3RyaW5nIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJuYW1lIiwid2lkdGgiOjUxMS41fSwiQ29zdCI6eyJuYW1lIjoiQ29zdCIsImFsaWFzIjoiQ29zdCIsInR5cGUiOiJERUNJTUFMIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjoiJDAsMC4wMCIsIm1hc2tUeXBlIjoibnVtZXJpYyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiQ29zdCIsIndpZHRoIjoxMjcuODc1fSwiVXNlIjp7Im5hbWUiOiJVc2UiLCJhbGlhcyI6IlVzZSIsInR5cGUiOiJCT09MRUFOIiwiZ2VuZXJpY190eXBlIjoiYm9vbGVhbiIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJib29sZWFuIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJVc2UiLCJ3aWR0aCI6MTI3Ljg3NX0sIlF1YW50aXR5Ijp7Im5hbWUiOiJRdWFudGl0eSIsImFsaWFzIjoiUXVhbnRpdHkiLCJ0eXBlIjoiSU5URUdFUiIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJudW1iZXIiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IlF1YW50aXR5Iiwid2lkdGgiOjEyNy44NzV9LCJBbW91bnQiOnsibmFtZSI6IkFtb3VudCIsImFsaWFzIjoiQW1vdW50IiwidHlwZSI6IkRFQ0lNQUwiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOiIkMCwwLjAwIiwibWFza1R5cGUiOiJudW1lcmljIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJBbW91bnQiLCJ3aWR0aCI6MTI3Ljg3NX19LCJwYXJlbnRTZXR0aW5ncyI6eyJDb25mZXJlbmNlT2ZmZXJzIjp7ImFsaWFzIjoibWFpbjpDb25mZXJlbmNlT2ZmZXJzIiwiY2hpbGRfbmFtZSI6Im1haW46RXhoaWJpdHMiLCJjaGlsZF90YWJsZSI6Im1haW46RXhoaWJpdHMiLCJjaGlsZF9lbnRpdHkiOiJtYWluOkV4aGliaXRzIiwicGFyZW50X25hbWUiOiJtYWluOkNvbmZlcmVuY2VPZmZlcnMiLCJwYXJlbnRfdGFibGUiOiJtYWluOkNvbmZlcmVuY2VPZmZlcnMiLCJwYXJlbnRfZW50aXR5IjoibWFpbjpDb25mZXJlbmNlT2ZmZXJzIiwiY29sdW1uRm9ybWF0cyI6eyJpZGVudCI6eyJuYW1lIjoiaWRlbnQiLCJhbGlhcyI6IkNvbmZlcmVuY2VPZmZlcnMgSWRlbnQiLCJ0eXBlIjoiSU5URUdFUiIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6ZmFsc2UsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoibnVtYmVyIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJfX2ludGVybmFsLnBhcmVudFJvd3MuQ29uZmVyZW5jZU9mZmVycy5pZGVudCIsInBhcmVudFJvbGUiOiJDb25mZXJlbmNlT2ZmZXJzIn0sIm5hbWUiOnsibmFtZSI6Im5hbWUiLCJhbGlhcyI6IkNvbmZlcmVuY2VPZmZlcnMgTmFtZSIsInR5cGUiOiJWQVJDSEFSIiwiZ2VuZXJpY190eXBlIjoic3RyaW5nIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6InN0cmluZyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiX19pbnRlcm5hbC5wYXJlbnRSb3dzLkNvbmZlcmVuY2VPZmZlcnMubmFtZSIsInBhcmVudFJvbGUiOiJDb25mZXJlbmNlT2ZmZXJzIn0sIkV4aGliaXRzQ29zdCI6eyJuYW1lIjoiRXhoaWJpdHNDb3N0IiwiYWxpYXMiOiJDb25mZXJlbmNlT2ZmZXJzIEV4aGliaXRzIENvc3QiLCJ0eXBlIjoiREVDSU1BTCIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjpmYWxzZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOiIkMCwwLjAwIiwibWFza1R5cGUiOiJudW1lcmljIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJfX2ludGVybmFsLnBhcmVudFJvd3MuQ29uZmVyZW5jZU9mZmVycy5FeGhpYml0c0Nvc3QiLCJwYXJlbnRSb2xlIjoiQ29uZmVyZW5jZU9mZmVycyJ9LCJUYWxrc0Nvc3QiOnsibmFtZSI6IlRhbGtzQ29zdCIsImFsaWFzIjoiQ29uZmVyZW5jZU9mZmVycyBUYWxrcyBDb3N0IiwidHlwZSI6IkRFQ0lNQUwiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6ZmFsc2UsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjoiJDAsMC4wMCIsIm1hc2tUeXBlIjoibnVtZXJpYyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiX19pbnRlcm5hbC5wYXJlbnRSb3dzLkNvbmZlcmVuY2VPZmZlcnMuVGFsa3NDb3N0IiwicGFyZW50Um9sZSI6IkNvbmZlcmVuY2VPZmZlcnMifSwiQnVkZ2V0Ijp7Im5hbWUiOiJCdWRnZXQiLCJhbGlhcyI6IkNvbmZlcmVuY2VPZmZlcnMgQnVkZ2V0IiwidHlwZSI6IkRFQ0lNQUwiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOiIkMCwwLjAwIiwibWFza1R5cGUiOiJudW1lcmljIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJfX2ludGVybmFsLnBhcmVudFJvd3MuQ29uZmVyZW5jZU9mZmVycy5CdWRnZXQiLCJwYXJlbnRSb2xlIjoiQ29uZmVyZW5jZU9mZmVycyJ9LCJBcHByb3ZlZCI6eyJuYW1lIjoiQXBwcm92ZWQiLCJhbGlhcyI6IkNvbmZlcmVuY2VPZmZlcnMgQXBwcm92ZWQiLCJ0eXBlIjoiQk9PTEVBTiIsImdlbmVyaWNfdHlwZSI6ImJvb2xlYW4iLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoiYm9vbGVhbiIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiX19pbnRlcm5hbC5wYXJlbnRSb3dzLkNvbmZlcmVuY2VPZmZlcnMuQXBwcm92ZWQiLCJwYXJlbnRSb2xlIjoiQ29uZmVyZW5jZU9mZmVycyJ9LCJFdmVudHNfYmluYXJ5Ijp7Im5hbWUiOiJFdmVudHNfYmluYXJ5IiwiYWxpYXMiOiJDb25mZXJlbmNlT2ZmZXJzIEV2ZW50cyBCaW5hcnkiLCJ0eXBlIjoiQkxPQiIsImdlbmVyaWNfdHlwZSI6ImJpbmFyeSIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJiaW5hcnkiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Il9faW50ZXJuYWwucGFyZW50Um93cy5Db25mZXJlbmNlT2ZmZXJzLkV2ZW50c19iaW5hcnkiLCJwYXJlbnRSb2xlIjoiQ29uZmVyZW5jZU9mZmVycyJ9LCJNYXJrZXRpbmdQcm9ncmFtTmFtZSI6eyJuYW1lIjoiTWFya2V0aW5nUHJvZ3JhbU5hbWUiLCJhbGlhcyI6IkNvbmZlcmVuY2VPZmZlcnMgTWFya2V0aW5nIFByb2dyYW0gTmFtZSIsInR5cGUiOiJWQVJDSEFSIiwiZ2VuZXJpY190eXBlIjoic3RyaW5nIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6InN0cmluZyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiX19pbnRlcm5hbC5wYXJlbnRSb3dzLkNvbmZlcmVuY2VPZmZlcnMuTWFya2V0aW5nUHJvZ3JhbU5hbWUiLCJwYXJlbnRSb2xlIjoiQ29uZmVyZW5jZU9mZmVycyJ9LCJQYXJ0bmVyVVJMIjp7Im5hbWUiOiJQYXJ0bmVyVVJMIiwiYWxpYXMiOiJDb25mZXJlbmNlT2ZmZXJzIFBhcnRuZXIgVVJMIiwidHlwZSI6IlZBUkNIQVIiLCJnZW5lcmljX3R5cGUiOiJzdHJpbmciLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoic3RyaW5nIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJfX2ludGVybmFsLnBhcmVudFJvd3MuQ29uZmVyZW5jZU9mZmVycy5QYXJ0bmVyVVJMIiwicGFyZW50Um9sZSI6IkNvbmZlcmVuY2VPZmZlcnMifSwiUGFydG5lckF1dGgiOnsibmFtZSI6IlBhcnRuZXJBdXRoIiwiYWxpYXMiOiJDb25mZXJlbmNlT2ZmZXJzIFBhcnRuZXIgQXV0aCIsInR5cGUiOiJWQVJDSEFSIiwiZ2VuZXJpY190eXBlIjoic3RyaW5nIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6InN0cmluZyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiX19pbnRlcm5hbC5wYXJlbnRSb3dzLkNvbmZlcmVuY2VPZmZlcnMuUGFydG5lckF1dGgiLCJwYXJlbnRSb2xlIjoiQ29uZmVyZW5jZU9mZmVycyJ9fX19LCJncm91cHMiOltdLCJsYWJlbFBsYWNlbWVudCI6ImxlZnQifSwiVGFsa3NfTGlzdCI6eyJuYW1lIjoiVGFsa3NfTGlzdCIsInRhYmxlTmFtZSI6Im1haW46VGFsa3MiLCJhbGlhcyI6IlRhbGtzIiwiZGlzcGxheWVkIjp0cnVlLCJzZWxlY3RlZCI6ZmFsc2UsImNvbHVtbkZvcm1hdHMiOnsiaWRlbnQiOnsibmFtZSI6ImlkZW50IiwiYWxpYXMiOiJJZGVudCIsInR5cGUiOiJJTlRFR0VSIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjpmYWxzZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJudW1iZXIiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6ImlkZW50In0sIm5hbWUiOnsibmFtZSI6Im5hbWUiLCJhbGlhcyI6Ik5hbWUiLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Im5hbWUiLCJ3aWR0aCI6NTExLjV9LCJDb25mZXJlbmNlc19pZGVudCI6eyJuYW1lIjoiQ29uZmVyZW5jZXNfaWRlbnQiLCJhbGlhcyI6IkNvbmZlcmVuY2VzIElkZW50IiwidHlwZSI6IklOVEVHRVIiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoibnVtYmVyIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJDb25mZXJlbmNlc19pZGVudCJ9LCJDb3N0Ijp7Im5hbWUiOiJDb3N0IiwiYWxpYXMiOiJDb3N0IiwidHlwZSI6IkRFQ0lNQUwiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOiIkMCwwLjAwIiwibWFza1R5cGUiOiJudW1lcmljIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJDb3N0Iiwid2lkdGgiOjEyNy44NzV9LCJVc2UiOnsibmFtZSI6IlVzZSIsImFsaWFzIjoiVXNlIiwidHlwZSI6IkJPT0xFQU4iLCJnZW5lcmljX3R5cGUiOiJib29sZWFuIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6ImJvb2xlYW4iLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IlVzZSIsIndpZHRoIjoxMjcuODc1fSwiUXVhbnRpdHkiOnsibmFtZSI6IlF1YW50aXR5IiwiYWxpYXMiOiJRdWFudGl0eSIsInR5cGUiOiJJTlRFR0VSIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6Im51bWJlciIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiUXVhbnRpdHkiLCJ3aWR0aCI6MTI3Ljg3NX0sIkFtb3VudCI6eyJuYW1lIjoiQW1vdW50IiwiYWxpYXMiOiJBbW91bnQiLCJ0eXBlIjoiREVDSU1BTCIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6IiQwLDAuMDAiLCJtYXNrVHlwZSI6Im51bWVyaWMiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IkFtb3VudCIsIndpZHRoIjoxMjcuODc1fX0sInJlbGF0aW9uc2hpcF9uYW1lIjoidG1wLTIwMDEtaXZpdWFpc3Z6cHZvd3NpcGR5bmgiLCJjaGlsZF90YWJsZSI6Im1haW46VGFsa3MiLCJkb3dubG9hZGFibGUiOmZhbHNlLCJncmlkQ29sdW1ucyI6eyJuYW1lIjp7Im5hbWUiOiJuYW1lIiwiYWxpYXMiOiJOYW1lIiwidHlwZSI6IlZBUkNIQVIiLCJnZW5lcmljX3R5cGUiOiJzdHJpbmciLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoic3RyaW5nIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJuYW1lIiwid2lkdGgiOjMwNn0sIkNvc3QiOnsibmFtZSI6IkNvc3QiLCJhbGlhcyI6IkNvc3QiLCJ0eXBlIjoiREVDSU1BTCIsImdlbmVyaWNfdHlwZSI6Im51bWJlciIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6IiQwLDAuMDAiLCJtYXNrVHlwZSI6Im51bWVyaWMiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6IkNvc3QiLCJ3aWR0aCI6NzYuNX0sIlVzZSI6eyJuYW1lIjoiVXNlIiwiYWxpYXMiOiJVc2UiLCJ0eXBlIjoiQk9PTEVBTiIsImdlbmVyaWNfdHlwZSI6ImJvb2xlYW4iLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoiYm9vbGVhbiIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiVXNlIiwid2lkdGgiOjc2LjV9LCJRdWFudGl0eSI6eyJuYW1lIjoiUXVhbnRpdHkiLCJhbGlhcyI6IlF1YW50aXR5IiwidHlwZSI6IklOVEVHRVIiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoibnVtYmVyIiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJRdWFudGl0eSIsIndpZHRoIjo3Ni41fSwiQW1vdW50Ijp7Im5hbWUiOiJBbW91bnQiLCJhbGlhcyI6IkFtb3VudCIsInR5cGUiOiJERUNJTUFMIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjoiJDAsMC4wMCIsIm1hc2tUeXBlIjoibnVtZXJpYyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiQW1vdW50Iiwid2lkdGgiOjc2LjV9fSwicGFyZW50U2V0dGluZ3MiOnsiQ29uZmVyZW5jZU9mZmVycyI6eyJhbGlhcyI6Im1haW46Q29uZmVyZW5jZU9mZmVycyIsImNoaWxkX25hbWUiOiJtYWluOlRhbGtzIiwiY2hpbGRfdGFibGUiOiJtYWluOlRhbGtzIiwiY2hpbGRfZW50aXR5IjoibWFpbjpUYWxrcyIsInBhcmVudF9uYW1lIjoibWFpbjpDb25mZXJlbmNlT2ZmZXJzIiwicGFyZW50X3RhYmxlIjoibWFpbjpDb25mZXJlbmNlT2ZmZXJzIiwicGFyZW50X2VudGl0eSI6Im1haW46Q29uZmVyZW5jZU9mZmVycyIsImNvbHVtbkZvcm1hdHMiOnsiaWRlbnQiOnsibmFtZSI6ImlkZW50IiwiYWxpYXMiOiJDb25mZXJlbmNlT2ZmZXJzIElkZW50IiwidHlwZSI6IklOVEVHRVIiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOmZhbHNlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6Im51bWJlciIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiX19pbnRlcm5hbC5wYXJlbnRSb3dzLkNvbmZlcmVuY2VPZmZlcnMuaWRlbnQiLCJwYXJlbnRSb2xlIjoiQ29uZmVyZW5jZU9mZmVycyJ9LCJuYW1lIjp7Im5hbWUiOiJuYW1lIiwiYWxpYXMiOiJDb25mZXJlbmNlT2ZmZXJzIE5hbWUiLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Il9faW50ZXJuYWwucGFyZW50Um93cy5Db25mZXJlbmNlT2ZmZXJzLm5hbWUiLCJwYXJlbnRSb2xlIjoiQ29uZmVyZW5jZU9mZmVycyJ9LCJFeGhpYml0c0Nvc3QiOnsibmFtZSI6IkV4aGliaXRzQ29zdCIsImFsaWFzIjoiQ29uZmVyZW5jZU9mZmVycyBFeGhpYml0cyBDb3N0IiwidHlwZSI6IkRFQ0lNQUwiLCJnZW5lcmljX3R5cGUiOiJudW1iZXIiLCJpc19lZGl0YWJsZSI6ZmFsc2UsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjoiJDAsMC4wMCIsIm1hc2tUeXBlIjoibnVtZXJpYyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiX19pbnRlcm5hbC5wYXJlbnRSb3dzLkNvbmZlcmVuY2VPZmZlcnMuRXhoaWJpdHNDb3N0IiwicGFyZW50Um9sZSI6IkNvbmZlcmVuY2VPZmZlcnMifSwiVGFsa3NDb3N0Ijp7Im5hbWUiOiJUYWxrc0Nvc3QiLCJhbGlhcyI6IkNvbmZlcmVuY2VPZmZlcnMgVGFsa3MgQ29zdCIsInR5cGUiOiJERUNJTUFMIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOmZhbHNlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6IiQwLDAuMDAiLCJtYXNrVHlwZSI6Im51bWVyaWMiLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Il9faW50ZXJuYWwucGFyZW50Um93cy5Db25mZXJlbmNlT2ZmZXJzLlRhbGtzQ29zdCIsInBhcmVudFJvbGUiOiJDb25mZXJlbmNlT2ZmZXJzIn0sIkJ1ZGdldCI6eyJuYW1lIjoiQnVkZ2V0IiwiYWxpYXMiOiJDb25mZXJlbmNlT2ZmZXJzIEJ1ZGdldCIsInR5cGUiOiJERUNJTUFMIiwiZ2VuZXJpY190eXBlIjoibnVtYmVyIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjoiJDAsMC4wMCIsIm1hc2tUeXBlIjoibnVtZXJpYyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiX19pbnRlcm5hbC5wYXJlbnRSb3dzLkNvbmZlcmVuY2VPZmZlcnMuQnVkZ2V0IiwicGFyZW50Um9sZSI6IkNvbmZlcmVuY2VPZmZlcnMifSwiQXBwcm92ZWQiOnsibmFtZSI6IkFwcHJvdmVkIiwiYWxpYXMiOiJDb25mZXJlbmNlT2ZmZXJzIEFwcHJvdmVkIiwidHlwZSI6IkJPT0xFQU4iLCJnZW5lcmljX3R5cGUiOiJib29sZWFuIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6ImJvb2xlYW4iLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Il9faW50ZXJuYWwucGFyZW50Um93cy5Db25mZXJlbmNlT2ZmZXJzLkFwcHJvdmVkIiwicGFyZW50Um9sZSI6IkNvbmZlcmVuY2VPZmZlcnMifSwiRXZlbnRzX2JpbmFyeSI6eyJuYW1lIjoiRXZlbnRzX2JpbmFyeSIsImFsaWFzIjoiQ29uZmVyZW5jZU9mZmVycyBFdmVudHMgQmluYXJ5IiwidHlwZSI6IkJMT0IiLCJnZW5lcmljX3R5cGUiOiJiaW5hcnkiLCJpc19lZGl0YWJsZSI6dHJ1ZSwiaXNfbnVsbGFibGUiOnRydWUsIm1hc2siOm51bGwsIm1hc2tUeXBlIjoiYmluYXJ5IiwiYmluYXJ5VHlwZSI6bnVsbCwiZXh0ZW5zaW9uVHlwZSI6bnVsbCwiZXZhbCI6W10sImRhdGFTb3VyY2UiOiJfX2ludGVybmFsLnBhcmVudFJvd3MuQ29uZmVyZW5jZU9mZmVycy5FdmVudHNfYmluYXJ5IiwicGFyZW50Um9sZSI6IkNvbmZlcmVuY2VPZmZlcnMifSwiTWFya2V0aW5nUHJvZ3JhbU5hbWUiOnsibmFtZSI6Ik1hcmtldGluZ1Byb2dyYW1OYW1lIiwiYWxpYXMiOiJDb25mZXJlbmNlT2ZmZXJzIE1hcmtldGluZyBQcm9ncmFtIE5hbWUiLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Il9faW50ZXJuYWwucGFyZW50Um93cy5Db25mZXJlbmNlT2ZmZXJzLk1hcmtldGluZ1Byb2dyYW1OYW1lIiwicGFyZW50Um9sZSI6IkNvbmZlcmVuY2VPZmZlcnMifSwiUGFydG5lclVSTCI6eyJuYW1lIjoiUGFydG5lclVSTCIsImFsaWFzIjoiQ29uZmVyZW5jZU9mZmVycyBQYXJ0bmVyIFVSTCIsInR5cGUiOiJWQVJDSEFSIiwiZ2VuZXJpY190eXBlIjoic3RyaW5nIiwiaXNfZWRpdGFibGUiOnRydWUsImlzX251bGxhYmxlIjp0cnVlLCJtYXNrIjpudWxsLCJtYXNrVHlwZSI6InN0cmluZyIsImJpbmFyeVR5cGUiOm51bGwsImV4dGVuc2lvblR5cGUiOm51bGwsImV2YWwiOltdLCJkYXRhU291cmNlIjoiX19pbnRlcm5hbC5wYXJlbnRSb3dzLkNvbmZlcmVuY2VPZmZlcnMuUGFydG5lclVSTCIsInBhcmVudFJvbGUiOiJDb25mZXJlbmNlT2ZmZXJzIn0sIlBhcnRuZXJBdXRoIjp7Im5hbWUiOiJQYXJ0bmVyQXV0aCIsImFsaWFzIjoiQ29uZmVyZW5jZU9mZmVycyBQYXJ0bmVyIEF1dGgiLCJ0eXBlIjoiVkFSQ0hBUiIsImdlbmVyaWNfdHlwZSI6InN0cmluZyIsImlzX2VkaXRhYmxlIjp0cnVlLCJpc19udWxsYWJsZSI6dHJ1ZSwibWFzayI6bnVsbCwibWFza1R5cGUiOiJzdHJpbmciLCJiaW5hcnlUeXBlIjpudWxsLCJleHRlbnNpb25UeXBlIjpudWxsLCJldmFsIjpbXSwiZGF0YVNvdXJjZSI6Il9faW50ZXJuYWwucGFyZW50Um93cy5Db25mZXJlbmNlT2ZmZXJzLlBhcnRuZXJBdXRoIiwicGFyZW50Um9sZSI6IkNvbmZlcmVuY2VPZmZlcnMifX19fSwiZ3JvdXBzIjpbXSwibGFiZWxQbGFjZW1lbnQiOiJsZWZ0In19LCJncm91cHMiOlt7InRpdGxlIjoiQ29uZmVyZW5jZSBPZmZlcnMiLCJjb2x1bW5zIjpbIm5hbWUiLCJBcHByb3ZlZCJdLCIkJGhhc2hLZXkiOiIwUUEifSx7InRpdGxlIjoiQWNjb3VudGluZyIsImNvbHVtbnMiOlsiTWFya2V0aW5nUHJvZ3JhbU5hbWUiLCJCdWRnZXQiLCJUYWxrc0Nvc3QiLCJFeGhpYml0c0Nvc3QiXSwiJCRoYXNoS2V5IjoiMVM2In0seyJ0aXRsZSI6IkludGVybmFsIEluZm8iLCJjb2x1bW5zIjpbImlkZW50Il0sIiQkaGFzaEtleSI6IjFUViJ9XSwibGFiZWxQbGFjZW1lbnQiOiJUb3AiLCJkZXNjcmlwdGlvbiI6IjxoMT5Db25mZXJlbmNlIE9mZmVyczwvaDE+PHA+T2ZmZXJzIGFyZSByZWNlaXZlZCBmcm9tIFBhcnRuZXJzLjwvcD48cD48YnIvPjwvcD48aDE+VXNhZ2UgSW5zdHJ1Y3Rpb25zPC9oMT48cD5Vc2UgdGhlIGFwcCB0byBhcHByb3ZlIENvbmZlcmVuY2UgT2ZmZXJzOjwvcD48b2w+PGxpPkZpcnN0LCB1c2UgdGhlIHRhYiBzaGVldHMgYmVsb3cgdG8gc2VsZWN0IHdoaWNoIG9wdGlvbnMgdG8gdXNlIChzdWJqZWN0IHRvIEJ1ZGdldCk8L2xpPjxsaT5UaGVuLCBBcHByb3ZlIChzZXQgdGhlIGNoZWNrYm94LCBvciBqdXN0IGNsaWNrIHRoZSB1cHBlci1yaWdodCBGdW5jdGlvbiBidXR0b24pIC0gQWRtaW4gVXNlcnMgb25seTwvbGk+PC9vbD4iLCJleHByZXNzZWRUaXRsZSI6IlwiQ29uZmVyZW5jZSBPZmZlcjogXCIgKyByb3cubmFtZSJ9",
+        "objectType": "table"
+      }
+    },
+    "{f}application.json": {
+      "name": "Default app",
+      "language": "eng",
+      "description": null
+    }
+  },
+  "{f}issues.json": [
+  ]
+}
