@@ -1,11 +1,13 @@
-var title = "conf-management SysTimerSystemQueue (3.1.2): ";
+var title = "conf-management PullOffersTimer: ";
 
 /*
 
-Scalable: mulitple nodes can POST ready SystemQueue rows
+Sometimes, source systems do not "push" data via APIs, or Messages.
+So, we can write timers to "upp" changes, like this:
 
-For each unprocessed SystemQueue, equal(ProcessedStatus:'Ready - Async')
-    <svr>/conf-management/v1/"main:SystemQueue"/[pk]/RetryPayload
+For eachConfOffer <svr>conf-offer/ManagementAlert, like(name:'%Pull%') since last-run
+    // key pattern: read data in form for POSTing
+    POST eachConfOffer <svr>/conf-management/v1/ProcessRequest  
 
 @see(Function RetryPayload)
 Consider - timerRun as optional parent
