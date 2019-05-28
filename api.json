@@ -1,7 +1,7 @@
 {
   "name": "Conference Management - Revised",
   "urlFragment": "conf-management",
-  "comments": "See wiki (above) for Install Instructions.\n\nIllustrates message handling (works with Conference Offers) - async, queued with mult req events, timers.\nAccepts Approved Conference Offers; Enable Manage > Listeners > Connections; see Rules > Process Messages topic.\n\nNote: uses public broker, not allowed in some corporate networks).\n\nOn a Mac, you may wish to test locally; start MQTT like this:\n/usr/local/sbin/mosquitto -c /usr/local/etc/mosquitto/mosquitto.conf\n\nand consider MQTTBox for monitoring messages.",
+  "comments": "See wiki (above) for Install Instructions....\n\nIllustrates message handling (works with Conference Offers) - async, queued with mult req events, timers.\nAccepts Approved Conference Offers; Enable Manage > Listeners > Connections; see Rules > Process Messages topic.\n\nNote: uses public broker, not allowed in some corporate networks).\n\nOn a Mac, you may wish to test locally; start MQTT like this:\n/usr/local/sbin/mosquitto -c /usr/local/etc/mosquitto/mosquitto.conf\n\nand consider MQTTBox for monitoring messages.",
   "isEnabled": true,
   "authProviderName": "Built-in authentication"
 }

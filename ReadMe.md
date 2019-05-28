@@ -2,7 +2,7 @@
 This folder contains the content of your API definition.
 Name: Conference Management - Revised
 URL Fragment: conf-management
-Comments: See wiki (above) for Install Instructions.
+Comments: See wiki (above) for Install Instructions....
 
 Illustrates message handling (works with Conference Offers) - async, queued with mult req events, timers.
 Accepts Approved Conference Offers; Enable Manage > Listeners > Connections; see Rules > Process Messages topic.
