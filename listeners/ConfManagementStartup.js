@@ -90,10 +90,15 @@ var prepareConfig = {
     settings: {
         loadedBy: "conf-management default settings - no API.properties file in LAC Default dir: " + userDir,
         resourceURL: "http://localhost:8080/rest/default/conf-management/v1",
-        confOfferURL: "http://localhost:8080/rest/default/conf-offer/v1",
         authHeader: {
             'headers': {
                 'Authorization': 'CALiveAPICreator AcctgToken:1'
+            }
+        },
+        confOfferURL: "http://localhost:8080/rest/default/conf-offer/v1",
+        confOfferAuthHeader: {
+            'headers': {
+                'Authorization': 'CALiveAPICreator AdminKey:1'
             }
         },
         loadResourcesFromTable: true  // set false to bypass restGet for resource names to audit

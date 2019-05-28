@@ -1,4 +1,4 @@
-var title = "conf-management PullOffersTimer: ";
+var title = "conf-management PullOffersTimer (1.1): ";
 
 /*
 
@@ -11,12 +11,18 @@ For eachConfOffer <svr>conf-offer/ManagementAlert, like(name:'%Pull%') since las
 
 @see(Function RetryPayload)
 Consider - timerRun as optional parent
+
+TODO - since last-run
 */
 
-var timerWakeupSystemQueueURL = Config.settings.resourceURL + "/main:SystemQueue";
-var getParams = {sysfilter: "equal(\"ProcessedStatus\":" + JSON.stringify("ASYNC - QUEUED") + ")"};  // TODO and since some date
-qItemsResponse = timerUtil.restGet(timerWakeupSystemQueueURL , getParams, Config.settings.authHeader);  // TODO - doc - SysUtil silent failure
-print("\n" + title + "Wake-up, found: " + qItemsResponse);
+try {
+    var pullConfOfferURL = Config.settings.confOfferURL + "/ManagementAlert";
+    var getParams = {sysfilter: "like(\"name\":" + JSON.stringify("%Pull Not Push%") + ")"};
+    pulledOffers = timerUtil.restGet(pullConfOfferURL , getParams, Config.settings.confOfferAuthHeader);
+    print("\n" + title + "Wake-up, found: " + pulledOffers);
+} catch (e) {
+    print("\n" + title + "EXCEPTION on wakeup: " + e);
+}
 
 var qItems = JSON.parse(qItemsResponse);  
 for each (var eachQItem in qItems) {

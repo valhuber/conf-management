@@ -1,4 +1,4 @@
-var title = "conf-management SysTimerSystemQueue (3.1.2): ";
+var title = "conf-management SysTimerSystemQueue (3.2): ";
 
 /*
 

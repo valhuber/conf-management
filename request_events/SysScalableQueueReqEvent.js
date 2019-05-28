@@ -1,5 +1,5 @@
 if (req.verb === 'POST') {
-    var title = "conf-management - SysScalableQueueReqEvent (3.1.1): ";
+    var title = "conf-management - SysScalableQueueReqEvent (3.1): ";
     var extProps = null;  // see resource Extended Properties: ProcessCharges
     try {
         extProps = SysUtility.getExtendedPropertiesFor(req.resourceName);
