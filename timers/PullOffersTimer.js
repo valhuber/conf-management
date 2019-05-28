@@ -3,14 +3,11 @@ var title = "conf-management PullOffersTimer (1.1): ";
 /*
 
 Sometimes, source systems do not "push" data via APIs, or Messages.
-So, we can write timers to "upp" changes, like this:
+So, we can write timers to "pull" changes, like this:
 
 For eachConfOffer <svr>conf-offer/ManagementAlert, like(name:'%Pull%') since last-run
     // key pattern: read data in form for POSTing
     POST eachConfOffer <svr>/conf-management/v1/ProcessRequest  
-
-@see(Function RetryPayload)
-Consider - timerRun as optional parent
 
 TODO - since last-run
 */
@@ -28,7 +25,6 @@ var pulledOffers = JSON.parse(pulledOffersResponse);
 var postArrays = [];
 for each (var eachPulledOffer in pulledOffers) {
     delete eachPulledOffer["@metadata"];
-    print(title + "eachPulledOffer: " + JSON.stringify(eachPulledOffer));
     postArrays = [];
     try {    // we have read data in POSTable format... do so!
         postArrays.push(eachPulledOffer);
