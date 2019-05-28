@@ -1,0 +1,16 @@
+{
+  "name": "Temp AuthToken for admin [2019-05-28 17:19:16.112]",
+  "authToken": "1351b3b9325c7fb0b3343c5374aa2aca",
+  "description": null,
+  "userIdentifier": "admin",
+  "isActive": true,
+  "expiration": "2019-05-29T17:19:16.113+00:00",
+  "logging": "admini=FINE,buslog=FINE,depend=FINE,generl=FINE,persis=FINE,engine=FINE,resrcs=FINE,securi=FINE,sysdbg=FINE,ulogic=FINE",
+  "isCreatedByAuthenticationService": true,
+  "roles": [
+    "Full access"
+  ],
+  "globals": {
+    "username": "admin"
+  }
+}
