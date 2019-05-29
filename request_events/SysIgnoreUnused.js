@@ -10,7 +10,7 @@ if (req.verb === 'POST') {
     // ignore cols not in meta data (note: simpler approach is to use req.setUserProperty("IgnoreExtraAttributes", "NonNullValue");... this illustrates utilizing metadata)
     if (extProps && 'object' === typeof extProps && ! Array.isArray(extProps) && extProps.hasOwnProperty('IgnoreColumns') ) {  // ProcessCharges ExtProp: { "PersistTo": "PersistCharges"}
         print("\n" + title + req.resourceName + " is designated (per extProps) - to ignore unused columns: " +
-            "\n...payload: " + JSON.stringify(req.json));
+            "\n...payload: " + json);  
         var resourcesString = SysUtility.restGet(Config.settings.resourceURL + "/@resources",
                                             {}, Config.settings.authHeader);
         var resources = JSON.parse(resourcesString);
@@ -30,10 +30,8 @@ if (req.verb === 'POST') {
         print(title + "resourceAttributes: " + JSON.stringify(resourceAttributes));
         
         var debugMoved = [];
-        var reqJsonObjArray = JSON.parse(req.json);
-        print(title + "reqJsonObjArray: " + JSON.stringify(reqJsonObjArray));
-        var reqJsonObj = reqJsonObjArray[0];  // TODO - should really deal with each obj, subObjs...
-        print(title + "reqJsonObj: " + JSON.stringify(reqJsonObj));
+        var reqJsonObj = JSON.parse(json);  // TODO - should really deal with each obj, subObjs...
+        print(title + "reqJsonObjArray: " + JSON.stringify(reqJsonObj));
         for  (var eachProp in reqJsonObj) { 
             var isDefinedAttr = false;
             // print(title + "eachProp: " + eachProp);
@@ -50,11 +48,8 @@ if (req.verb === 'POST') {
                 delete reqJsonObj[eachProp];
             }
           }
-        var prunedJson = JSON.stringify(reqJsonObj);
-        print(title + "prunedJson: " + prunedJson);
-        json = prunedJson;  // system will process this altered json
-        req.json = JSON.stringify(json);
+        json = JSON.stringify(reqJsonObj);  // system will process this altered json  
         print(title + "copyAttributes - moved: [" + debugMoved + "]" +
-            "\n...revised req: " + JSON.stringify(json));
+            "\n...revised json: " + json);
     }
 }

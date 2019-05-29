@@ -1,6 +1,6 @@
 {
   "name": "ProcessChargesResource",
-  "description": "Payload sample, created by Post, ProcessChargesListener, or SysTimerAsync:\n\n[\n  {\n    \"name\": \"App Economy World\",\n    \"unusedAttribute\": \"deleteMe\",\n    \"ExhibitsCost\": null,\n    \"TalksCost\": null,\n    \"MarketingProgramName\": \"Agile\",\n    \"Talks_List\": [\n    ]\n  }\n]",
+  "description": "Payload sample, created by Post, ProcessChargesListener, or SysTimerAsync:\n\n[\n  {\n    \"name\": \"App Economy World\",\n    \"unusedAttribute\": \"deleteMe\",\n    \"Cost\": {\n        \"ExhibitsCost\": null,\n        \"TalksCost\": null\n    },\n    \"MarketingProgramName\": \"Agile\",\n    \"Talks_List\": [\n    ]\n  }\n]\n\n[\n  {\n    \"name\": \"App Economy World\",\n    \"unusedAttribute\": \"deleteMe\",\n    \"ExhibitsCost\": null,\n    \"TalksCost\": null,\n    \"MarketingProgramName\": \"Agile\",\n    \"Talks_List\": [\n    ]\n  }\n]",
   "siblingRank": 100,
   "resourceType": "TableBased",
   "prefix": "main",

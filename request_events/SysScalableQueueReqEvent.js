@@ -11,13 +11,14 @@ if (req.verb === 'POST') {
     if (extProps && 'object' === typeof extProps && ! Array.isArray(extProps) && extProps.hasOwnProperty('Async') ) {  // ProcessCharges ExtProp: { "Async": "SystemQueue"}
         var ttl = title + "ASYNC - QUEUE - ";
         var byPassAsync = req.urlParameters.ByPassAsync;
-        print("\n" + ttl + "start... req.verb: " + req.verb + ", byPassAsync: " + byPassAsync + "\n... json: " + JSON.stringify(json));
+        print("\n" + ttl + "start... req.verb: " + req.verb + ", byPassAsync: " + byPassAsync + 
+            "\n... json: " + json);
         print("\n ...isPost: " + (req.verb == "POST"));
         if (byPassAsync || req.verb !== "POST") {  // don't queue (let the request proceed)
             print(ttl + req.resourceName + " has ByPassAsync url arg, or is not POST");
         } else {
             var systemQueuePayload = {};
-            systemQueuePayload.MsgContent = req.json;
+            systemQueuePayload.MsgContent = json;
             systemQueuePayload.PostToResource = req.resourceName;
             systemQueuePayload.ProcessedStatus = "ASYNC - QUEUED";
             var systemQueueURL = Config.settings.resourceURL + "/" + "SystemQueue";

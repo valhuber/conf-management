@@ -12,7 +12,7 @@ if (req.verb === 'POST') {
         print("\n" + title + req.resourceName + " is group-appended (per extProps) - for groups: " + 
             extProps.AppendGroups + "\npayload: " + req.json);
         var debugMoved = [];
-        var reqJsonObjArray = JSON.parse(req.json);
+        var reqJsonObjArray = JSON.parse(json);
         print(title + "reqJsonObjArray: " + JSON.stringify(reqJsonObjArray));
         var reqJsonObj = reqJsonObjArray[0];  // TODO - deal with *each* obj, subObjs...
         print(title + "reqJsonObj: " + JSON.stringify(reqJsonObj));
@@ -28,6 +28,7 @@ if (req.verb === 'POST') {
                 delete reqJsonObj[eachProp];    
             }
         }
-        print(title + "flattened reqJsonObj: " + JSON.stringify(reqJsonObj));
+        json = JSON.stringify(reqJsonObj);
+        print(title + "flattened json: " + json);
     }
 }
