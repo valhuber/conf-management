@@ -49,8 +49,10 @@ var testData =
   {
     "name": "testAll",
     "unusedAttribute": "deleteMe",
-    "ExhibitsCost": null,
-    "TalksCost": null,
+    "Cost": {
+        "Exhibits": 1,
+        "Talks": 2
+    },
     "MarketingProgramName": "Agile",
     "Talks_List": [
     ]
