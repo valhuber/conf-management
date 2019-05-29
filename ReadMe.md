@@ -13,3 +13,6 @@ On a Mac, you may wish to test locally; start MQTT like this:
 /usr/local/sbin/mosquitto -c /usr/local/etc/mosquitto/mosquitto.conf
 
 and consider MQTTBox for monitoring messages.
+
+
+
