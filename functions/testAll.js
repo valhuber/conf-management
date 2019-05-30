@@ -1,5 +1,5 @@
 var tests = [  // titles of tests to run (ok to alter, appears in reponse to explain what tests were run)
-    "Synchronous Post (via ProcessCharges function)",
+    "Synchronous Post (via ProcessCharges function)",  // none of these tests require the listener
     "Scalable    Post (via ProcessChargesResource (per Req Events / Ext Props > SystemQueue > Timer + RetryProces function)",
     "Scalable    Post (via ProcessChargesResource (per Req Events / Ext Props > SystemQueue > Timer + RetryProces function) !!Intentional Error",
     "System Queue Error Correction (via SystemQueue async event)"
@@ -53,7 +53,7 @@ function isQueueEnabledInProcessCharges() {
     // see if we are using Async
     print (title + "isQueueEnabledInProcessCharges, extProps: " + JSON.stringify(extProps));
     if (extProps && 'object' === typeof extProps && ! Array.isArray(extProps) && extProps.hasOwnProperty('Async') )  {
-        asyncValue = extProps.async;
+        asyncValue = extProps.Async + "";
         return asyncValue.contains("Enabled");  
     }
     return false;
@@ -62,7 +62,7 @@ function isQueueEnabledInProcessCharges() {
 
 
 // ************************ Execution begins here - configure
-var isQueueEnabled = false; // isQueueEnabledInProcessCharges();   // false bypasses queue-dependent tests
+var isQueueEnabled = isQueueEnabledInProcessCharges();   // false bypasses queue-dependent tests
 
 // setup
 
@@ -103,7 +103,7 @@ chargesCount = getRowCount("Charges");
 db (title + "chargesCount: " + chargesCount);
 
 testData[0].name = "testAll - " + testName;
-restResult = postOffer(testData, "ProcessCharges");
+restResult = postOffer(testData, "ProcessCharges");  // this is the function, which uses arg bypassAsync
 
 sysQueueCountAfter = getRowCount("SystemQueue");
 db (title + "sysQueueCount: " + sysQueueCountAfter);
