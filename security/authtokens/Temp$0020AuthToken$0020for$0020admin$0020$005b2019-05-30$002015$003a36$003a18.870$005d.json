@@ -1,10 +1,10 @@
 {
-  "name": "Temp AuthToken for admin [2019-05-29 13:11:22.996]",
-  "authToken": "e9f7972aac539ccdfb3f2ef0b07fb998",
+  "name": "Temp AuthToken for admin [2019-05-30 15:36:18.870]",
+  "authToken": "1152b33f0368a8c69db7e6a0b581b8a3",
   "description": null,
   "userIdentifier": "admin",
   "isActive": true,
-  "expiration": "2019-05-30T13:11:22.996+00:00",
+  "expiration": "2019-05-31T15:36:18.87+00:00",
   "logging": "admini=FINE,buslog=FINE,depend=FINE,generl=FINE,persis=FINE,engine=FINE,resrcs=FINE,securi=FINE,sysdbg=FINE,ulogic=FINE",
   "isCreatedByAuthenticationService": true,
   "roles": [
