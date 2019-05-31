@@ -1,5 +1,5 @@
 if (req.verb === 'POST') {
-    var title = "conf-management - SysFlatten Req Event (3a): ";
+    var title = "conf-management - SysFlatten Req Event: ";
     var extProps = null;  // see resource Extended Properties: ProcessCharges
     try {
         extProps = SysUtility.getExtendedPropertiesFor(req.resourceName);

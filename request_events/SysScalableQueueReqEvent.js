@@ -26,7 +26,7 @@ if (req.verb === 'POST') {
             print(ttl + req.resourceName + " is queued (per extProps): " +
                 "\nurl: " + systemQueueURL + "\npayload: " + JSON.stringify(systemQueuePayload));
             print(ttl + "clearing json... response:\n" + persistToResponse);
-            json = JSON.stringify({"hijack": "true"});  // terminate request... @see(SysProcessAsyncHijack)
+            throw "terminate request... @see(SysScalableQueueHijackReqEvent";
         }
     }
 }
