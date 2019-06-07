@@ -88,7 +88,7 @@ var propFileName = teamSpaceName + ".properties";
 var prepareConfig = {
     createdOn: new Date(),
     settings: {
-        loadedBy: "conf-management default settings - no API.properties file in LAC Default dir: " + userDir,
+        loadedBy: "conf-management startup listener default settings - no API.properties file in LAC Default dir: " + userDir,
         resourceURL: "http://localhost:8080/rest/default/conf-management/v1",
         authHeader: {
             'headers': {

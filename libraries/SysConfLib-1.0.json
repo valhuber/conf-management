@@ -1,8 +1,8 @@
 {
-  "name": "ConfManagementLib",
+  "name": "SysConfLib",
   "version": "1.0",
   "isUsedByProject": true,
-  "title": "ConfManagementLib",
+  "title": "SysConfLib",
   "description": "This is a JavaScript library",
   "groupName": "newlib",
   "docsURL": null,
